@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LAN3107 Interactive Teaching Deck: Workplace Meetings &amp; Pronunciation</title>
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +94,9 @@
     .slide-card {
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .zh { display: block; margin-top: 0.25rem; color: #475569; font-size: 0.92em; line-height: 1.55; font-weight: 400; }
+    .lang-btn { min-height: 36px; color: #cbd5e1; }
+    .lang-btn.active { background: #0891b2; color: #fff; }
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -124,6 +128,13 @@
 
       <!-- Global Controls -->
       <div class="flex flex-wrap items-center gap-2">
+        <!-- Language toggle, matching the EN / Traditional / Simplified control in the EAII deck -->
+        <div id="langToggle" class="flex items-center rounded-lg border border-slate-600 bg-slate-800 overflow-hidden text-xs font-bold select-none" title="Switch language / 切換語言" aria-label="Language">
+          <button type="button" data-lang-btn="en" class="lang-btn px-2.5 py-1.5 transition">EN</button>
+          <button type="button" data-lang-btn="hant" class="lang-btn px-2.5 py-1.5 transition">繁</button>
+          <button type="button" data-lang-btn="hans" class="lang-btn px-2.5 py-1.5 transition">简</button>
+        </div>
+
         <!-- View Mode Toggle -->
         <button id="btnViewMode" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 flex items-center gap-1.5 transition">
           <span id="viewModeIcon">📑</span>
@@ -2782,7 +2793,6 @@
         renderTask4();
       } else if (activeTabId === 'tab-task5') {
         renderTask5();
-      renderVideoQuizzes();
       }
       renderVideoQuizzes();
       showToast('Current tab reset for fresh classroom practice!', '↺');
@@ -2861,13 +2871,183 @@
       if (dialog && !dialog.open) dialog.showModal();
     }
 
+    const state = { lang: 'en' };
+    // EN / Traditional Chinese / Simplified Chinese language support.
+    // English remains visible; translated text appears on the next line.
+    const ZH_TW = {
+      "Learning Objectives": "學習目標",
+      "Lesson Overview": "課程概覽",
+      "Check each objective as you work through the lesson.": "學習本課時，請逐項完成以下目標。",
+      "Workplace Meetings: Pronunciation & Interaction Strategies": "職場會議：發音與互動策略",
+      "Presented by Rebecca Tang": "主講：Rebecca Tang",
+      "Task 1: Word Stress & Silent ‘e’": "任務一：單詞重音與不發音字母 e",
+      "Task 2: Multisyllabic Words": "任務二：多音節詞語",
+      "Task 3: Sentence Stress": "任務三：句子重音",
+      "Task 4: Active Listening": "任務四：積極聆聽",
+      "Task 5 & 6: Meeting Interaction": "任務五及六：會議互動",
+      "1. Use word stress & sentence stress": "1. 運用單詞重音和句子重音",
+      "2. Decode multisyllabic words & silent ‘e’": "2. 分辨多音節詞語及不發音字母 e",
+      "3. Demonstrate ‘active listening’ in meetings": "3. 在會議中展現「積極聆聽」",
+      "4. Apply effective interaction strategies": "4. 運用有效的互動策略",
+      "5. Check understanding": "5. 確認理解",
+      "Break down long words using prefixes, suffixes, vowel sounds, and the silent ‘e’ rule (Tasks 1c & 2).": "運用前綴、後綴、元音及不發音字母 e 的規則拆解長詞（任務 1c 及 2）。",
+      "Stress two-syllable nouns/verbs, suffixes (-ic, -tion, -sion), and key content words to communicate ideas clearly (Tasks 1 & 3).": "讀出雙音節名詞及動詞、常見後綴（-ic、-tion、-sion）和重要內容詞的重音，清楚表達想法（任務 1 及 3）。",
+      "Use verbal responses (acknowledging, clarifying, giving feedback) and non-verbal cues like eye contact (Task 4).": "運用口頭回應（表示認同、澄清及給予回饋）和眼神接觸等非語言提示（任務 4）。",
+      "Politely interrupt, ask for clarification, and invite quieter team members to contribute (Task 5).": "有禮貌地打斷、要求澄清，並邀請較少發言的組員參與（任務 5）。",
+      "Apply interaction strategies to check others’ understanding and clarify points in meetings (Task 6).": "運用互動策略確認他人是否理解，並在會議中澄清要點（任務 6）。",
+      "Teacher Mode: OFF": "教師模式：關",
+      "Slide-by-Slide Mode: OFF": "逐張投影片模式：關",
+      "Show Tab Answers": "顯示本分頁答案",
+      "Reset Tab": "重設分頁",
+      "Previous Card": "上一張",
+      "Next Card": "下一張",
+      "Scan to open the teaching deck": "掃描以開啟教學教材",
+      "Point your phone camera at the code.": "請用手機相機掃描此二維碼。",
+      "Welcome! In this interactive lesson, we will practise clear English pronunciation and effective communication skills for workplace meetings. By the end of this lesson, you will be able to:": "歡迎！本互動課程將練習清晰的英語發音，以及職場會議所需的有效溝通技巧。完成課程後，你將能夠：",
+      "Task 1: Word Stress & the Silent ‘e’ Rule": "任務一：單詞重音與不發音字母 e 規則",
+      "Understanding word stress and the silent ‘e’ pattern can help you speak clearly in workplace meetings. A stressed syllable stands out through greater prominence—often length, loudness, or a change in pitch. The silent ‘e’ pattern can change the vowel sound in a word.": "了解單詞重音和不發音字母 e 的規則，有助你在職場會議中清楚表達。重讀音節通常會較長、較響亮，或音高有所變化，因此較為突出。不發音字母 e 的規則也會改變詞語中的元音發音。",
+      "Task 1a: Word Stress in Two-Syllable Nouns & Verbs": "任務 1a：雙音節名詞及動詞的單詞重音",
+      "The same two-syllable word can sometimes be both a noun and a verb, and we stress them differently! Note: Syllables are the units of pronunciation in a word. Usually, you can tell the number of syllables by the number of vowel sounds.": "同一個雙音節詞有時既可作名詞，也可作動詞，而兩種用法的重音位置可能不同！注意：音節是詞語中的發音單位。通常可根據元音的發音數量判斷音節數。",
+      "In two-syllable nouns, we usually put the stress on the first syllable.": "雙音節名詞通常重讀第一個音節。",
+      "In two-syllable verbs, we often put the stress on the second syllable.": "雙音節動詞通常重讀第二個音節。",
+      "Word Stress Before Suffixes: -ic, -tion, and -sion": "後綴 -ic、-tion 和 -sion 前的重音",
+      "Words in English that end with certain suffixes* often have the stress placed on the syllable right before the suffix (the second-last syllable). *A suffix is a group of letters attached to the end of a word to form a related word.": "英語中以某些後綴結尾的詞語，通常重讀後綴前面的音節，也就是倒數第二個音節。*後綴是加在詞語末尾、用來構成相關詞語的一組字母。",
+      "Learn why stressing the right syllable makes your English much easier to understand (e.g. HAP-py vs des-SERT, and CON-tent vs con-TENT).": "了解為何把重音放在正確的音節上，能令你的英語更容易聽懂（例如 HAP-py 與 des-SERT、CON-tent 與 con-TENT）。",
+      "Reviews two-syllable noun and verb stress, common patterns for -ic, -tion, and -sion words, and repeat-after-me practice.": "重溫雙音節名詞和動詞的重音、-ic、-tion 及 -sion 詞語的常見規律，並跟讀練習。",
+      "Pronunciation Strategy: The Silent ‘e’ Rule": "發音策略：不發音字母 e 規則",
+      "A final ‘e’ is often silent. In the common vowel-consonant-e pattern, it signals that the preceding vowel usually has a “long” sound, as in mate and hope. A final e can also signal soft c or g, as in lace and stage. English spelling has exceptions.": "詞尾的 e 通常不發音。在常見的「元音－輔音－e」拼寫模式中，e 表示前面的元音通常讀長音，例如 mate 和 hope。詞尾 e 也可表示 c 或 g 讀軟音，例如 lace 和 stage。英語拼寫亦有例外。",
+      "Explains how a final silent ‘e’ can signal a long vowel and mark c or g as a soft consonant, as in arrange and engage.": "說明詞尾不發音的 e 如何表示長元音，並令 c 或 g 讀軟音，例如 arrange 和 engage。",
+      "Task 2: Decoding Multisyllabic Words": "任務二：拆解多音節詞語",
+      "In workplace meetings, many words contain more than one syllable, such as ultimately and sustainable. These are called multisyllabic words. Breaking them down by their syllables makes them much easier to pronounce!": "職場會議中有不少詞語包含多個音節，例如 ultimately 和 sustainable。這些詞稱為多音節詞。按音節拆解詞語，會令發音容易得多！",
+      "3 Steps to Break Down Multisyllabic Words:": "拆解多音節詞的三個步驟：",
+      "Identify Prefixes & Suffixes": "辨認前綴和後綴",
+      "Spot familiar word beginnings (re-, eco-, under-) and endings (-able, -tion, -ment).": "找出熟悉的詞首（re-、eco-、under-）和詞尾（-able、-tion、-ment）。",
+      "Identify Remaining Vowel Sounds": "辨認其餘的元音",
+      "Count the vowel sounds in the root word (remembering vowel teams like ai or ea make one sound).": "數出詞根中的元音發音（留意 ai 或 ea 等元音組合只代表一個發音）。",
+      "Pronounce Slowly, Then Blend": "先慢讀，再連讀",
+      "Say each syllable chunk slowly, then blend them smoothly with the correct word stress.": "先逐個音節慢慢讀，再配合正確的單詞重音順暢地連讀。",
+      "What is a Prefix?": "甚麼是前綴？",
+      "A prefix is a group of letters added to the beginning of a word to change its meaning. Select the correct meaning for each common prefix below, then click the speaker button to practise pronouncing the examples!": "前綴是加在詞語開首、用來改變詞義的一組字母。選出以下常見前綴的正確意思，再按喇叭按鈕練習例詞的發音！",
+      "What is a Suffix?": "甚麼是後綴？",
+      "A suffix is a group of letters added to the end of a word to form a related word. Many suffixes also indicate the word’s part of speech (such as noun, verb, or adjective). Discuss with a partner and type another example for each suffix.": "後綴是加在詞語末尾、用來構成相關詞語的一組字母。許多後綴也表示詞性（例如名詞、動詞或形容詞）。與同伴討論，並為每個後綴輸入另一個例子。",
+      "Type the prefix (with a hyphen after, e.g. re-) or suffix (with a hyphen before, e.g. -able) for each word below.": "為以下每個詞輸入其前綴（後加連字符，例如 re-）或後綴（前加連字符，例如 -able）。",
+      "Task 2b: Identifying Vowel Sounds to Divide Syllables": "任務 2b：辨認元音以劃分音節",
+      "Counting distinct vowel sounds (rather than vowel letters) is a useful first step for estimating syllables. Pronounce the word to check your count, using these tips:": "數出不同的元音發音（而非元音字母）是估算音節數的好方法。可按以下提示讀出詞語並核對數目：",
+      "The word ‘cost’ contains one vowel sound → 1 syllable. In contrast, ‘carbon’ includes two vowel sounds → 2 syllables (car-bon).": "cost 一詞有一個元音發音，因此有 1 個音節。相反，carbon 有兩個元音發音，因此有 2 個音節（car-bon）。",
+      "Sometimes two vowels combine to make one sound, such as ‘ai’ in sustain (2 syllables) and ‘ea’ in each (1 syllable). Count them as one vowel sound!": "有時兩個元音字母合起來只發一個音，例如 sustain 中的 ai（2 個音節）和 each 中的 ea（1 個音節）。請把它們計作一個元音發音！",
+      "At the start of these words, ‘y’ represents a consonant sound (yes, yellow). In words such as sky, recycle, and activity, it represents a vowel sound.": "在 yes、yellow 等詞的開首，y 代表輔音；在 sky、recycle 和 activity 等詞中，y 則代表元音。",
+      "Task 2c: Practise Multisyllabic Words & Word Families": "任務 2c：練習多音節詞及同字根詞族",
+      "Listen to the model, practise saying each word or word pair aloud, and mark it as practised. Notice how some suffixes, such as -ity, can shift the stressed syllable. For additional practice, open one of the worksheets: Worksheet 1 • Worksheet 2 • Worksheet 3": "聆聽示範，朗讀每個詞語或詞語組合，並標記為已練習。留意 -ity 等後綴可能會改變重讀音節。如需更多練習，請開啟其中一份工作紙：工作紙一 • 工作紙二 • 工作紙三。",
+      "Watch how stress shifts when we build longer words from root words (e.g., equal → equality, inform → information, resident → residential)—just like the pairs in Set 2 and Set 3 above!": "觀看如何由詞根組成較長詞語時移動重音（例如 equal → equality、inform → information、resident → residential），與上面第 2 組及第 3 組的詞語相似！",
+      "Task 3: Pronunciation Strategies — Sentence Stress": "任務三：發音策略——句子重音",
+      "In English, sentence stress helps listeners follow the main idea. Content words carry much of the meaning and often receive stress; function words connect ideas and are often unstressed. Either type can be stressed for emphasis or contrast.": "在英語中，句子重音能幫助聽者掌握主要意思。內容詞承載大部分意思，通常會重讀；功能詞連接語意，通常不重讀。兩類詞都可以為了強調或對比而重讀。",
+      "Words that carry much of the sentence’s meaning, such as nouns, main verbs, adjectives, and adverbs. They often stand out through greater length, loudness, or pitch movement.": "承載句子主要意思的詞語，例如名詞、主要動詞、形容詞和副詞。這些詞通常會較長、較響亮，或音高有所變化，因此較為突出。",
+      "Words that express grammatical relationships, such as articles, conjunctions, and prepositions. They are often spoken quickly and softly, unless the speaker emphasizes them.": "表示語法關係的詞語，例如冠詞、連接詞和介詞。除非說話者要特別強調，否則這些詞通常讀得較快、較輕。",
+      "For Task 3a, listen to the recording and click the content words that should carry a blue stress dot. In pairs, practise reading the sentences aloud. For Task 3b, follow the drag-and-drop directions below.": "任務 3a：聆聽錄音，點選應加上藍色重音點的內容詞，並與同伴朗讀句子。任務 3b：按照以下拖放指示完成活動。",
+      "Stressing a different word can change what a speaker emphasizes. Click each word below to compare the possible implied meanings:": "重讀不同的詞會改變說話者強調的意思。點選以下各詞，比較可能隱含的意思：",
+      "Learn why English is a stress-timed language (like the beat in “We ALL LIVE in a YEL-low SUB-ma-rine”) and how unstressed function words like can, of, than, a become quick “weak forms” (/ə/).": "了解英語為何屬於重音計時語言（如 We ALL LIVE in a YEL-low SUB-ma-rine 的節拍），以及 can、of、than、a 等非重讀功能詞如何變成快速的「弱讀形式」(/ə/)。",
+      "What can you say or do to show a colleague that you are listening? Think of one verbal response and one non-verbal cue.": "你可以說甚麼或做甚麼，讓同事知道你正在聆聽？請想出一種口頭回應和一種非語言提示。",
+      "Match each example to the active listening strategy or cue it demonstrates. Use the audio buttons to hear the verbal examples or a short summary of each non-verbal cue.": "把每個例子配對至它所展示的積極聆聽策略或提示。按音訊按鈕聆聽口頭例子，或收聽各項非語言提示的簡短說明。",
+      "Choose the active listening strategy each speaker demonstrates:": "選出每位說話者所展示的積極聆聽策略：",
+      "Explains non-verbal cues (eye contact, open posture) and verbal responses (reflecting back, follow-up questions) in clear English.": "以清晰英語說明非語言提示（眼神接觸、開放的姿勢）和口頭回應（覆述、追問）。",
+      "Watch how colleagues acknowledge points and give polite feedback: “I see what you mean, but…” and “OK, maybe you’ve got a point there.”": "觀看同事如何表示聽懂對方的要點並有禮貌地給予回饋，例如：「我明白你的意思，不過……」和「好，也許你說得有道理。」",
+      "Task 5: Effective Interaction Strategies in Meetings": "任務五：會議中的有效互動策略",
+      "Learn these three essential interaction strategies to participate effectively:": "學習以下三種重要的互動策略，積極參與會議：",
+      "Politely interrupt a speaker when you have something important to add to the conversation.": "有重要內容想補充時，可有禮貌地打斷說話者。",
+      "If you do not fully understand a point, do not hesitate to ask the speaker to clarify or give an example.": "如果未完全明白某一點，請放心要求說話者澄清或舉例說明。",
+      "Make sure to engage all members in the discussion by asking for their thoughts or opinions.": "詢問所有組員的想法或意見，確保每個人都參與討論。",
+      "Task 5b: Watch the Meeting Clips & Identify the Interaction Strategy": "任務 5b：觀看會議片段並辨認互動策略",
+      "Watch each video, then choose the interaction strategy Speaker 2 demonstrates: interrupting politely, asking for clarification, or asking for contributions. Use the transcript to review the key phrases.": "觀看每段影片，然後選出說話者二所展示的互動策略：有禮貌地打斷、要求澄清，或邀請他人發言。使用文字稿重溫重要句式。",
+      "Task 6: Check Understanding in Meetings": "任務六：在會議中確認理解",
+      "When a point is unclear or you want to confirm that others understand, ask a brief question or invite them to explain it in their own words. This helps prevent misunderstandings and keeps the meeting on track.": "如果某一點不清楚，或你想確認其他人是否理解，可以簡短提問，或請他們用自己的話解釋。這有助避免誤解，並讓會議按計劃進行。",
+      "Select all expressions below that are used to check understanding (either checking your own understanding or checking if others follow you), then click Check Answers !": "選出以下所有用來確認理解的句式（確認自己是否理解，或確認別人是否明白），然後按「檢查答案」！",
+      "In groups, choose one scenario and hold a three-minute meeting. Give everyone a chance to contribute, use the interaction strategies from this tab, and check that the group understands the final decision. Use several target words as you speak.": "分組選擇一個情境，進行三分鐘會議。讓每位組員都有機會發言，運用本分頁的互動策略，並確認全組理解最後的決定。討論時請使用數個目標詞語。",
+      "Target Words:": "目標詞語：",
+      "Task 1c Practice Studio: Practise 9 Meeting Words": "任務 1c 發音練習室：練習九個會議詞語",
+      "Quick Check: Noun (1st Syllable) or Verb (2nd Syllable)?": "快速測驗：名詞（重讀第一音節）還是動詞（重讀第二音節）？",
+      "Practice: Identify the Prefix or Suffix": "練習：辨認前綴或後綴",
+      "Count the Syllables & Click ‘Reveal Syllables’:": "數一數音節，然後按「顯示音節」：",
+      "Place the Stress Dot ( ) Over Stressed Content Words": "在重讀的內容詞上方放置重音點",
+      "Warm-Up Discussion Questions:": "熱身討論問題：",
+      "We Can Demonstrate ‘Active Listening’ By…": "我們可以這樣展現「積極聆聽」……",
+      "Interactive Practice: Match the Active Listening Function": "互動練習：配對積極聆聽的作用",
+      "a. Interrupting Politely": "a. 有禮貌地打斷",
+      "b. Asking for Clarification": "b. 要求澄清",
+      "c. Asking for Contributions": "c. 邀請他人發言",
+      "Quiz: Which Expressions Are Used to Check Understanding?": "測驗：哪些句式用來確認理解？",
+      "Put It All Together: 3-Minute Group Meeting Practice": "綜合練習：三分鐘小組會議",
+      "Your marketing team is meeting to decide how to promote a new burger meal (posters, flyers, 20% discount, or social media).": "你的市場推廣團隊正開會決定如何宣傳新的漢堡套餐（海報、傳單、八折優惠或社交媒體）。",
+      "You are meeting with volunteer coordinators to boost donations for an eco-friendly charity campaign.": "你正與義工協調員開會，商討如何增加環保慈善活動的捐款。",
+      "promote, advertise, poster, flyer, discount, promotional, convenient, engaging": "推廣、宣傳、海報、傳單、折扣、推廣活動、方便、有吸引力",
+      "sustainable, eco-friendly, biodegradable, commitment, priority, reusable": "可持續的、環保的、可生物降解的、承諾、優先事項、可重複使用的",
+      "We saw a sharp DE crease in costs.": "我們看到成本大幅下（降）。",
+      "We need to de CREASE plastic waste.": "我們需要減（少）塑膠廢物。",
+      "Listen to the model, practise saying each word or word pair aloud, and mark it as practised.": "聆聽示範，大聲練習讀出每個詞語或詞語組合，並標記為已練習。",
+      "Watch each video, then choose the interaction strategy Speaker 2 demonstrates:": "觀看每段影片，然後選出說話者二所展示的互動策略：",
+      "For Task 3a, listen to the recording and click the content words that should carry a blue stress dot.": "任務 3a：聆聽錄音，點選應加上藍色重音點的內容詞。",
+      "Scenario:": "情境：",
+      "Could you please clarify what you mean by…?": "你可以澄清一下你的意思嗎？",
+      "Can you give an example of…?": "你可以舉個……的例子嗎？",
+      "Excuse me, could I add something here?": "不好意思，我可以補充一點嗎？",
+      "May I jump in for a moment?": "我可以插一句嗎？",
+      "I’d like to hear your thoughts on this, [Name].": "[姓名]，我想聽聽你對這件事的看法。",
+      "[Name], what do you think about this idea?": "[姓名]，你對這個想法有甚麼看法？"
+    };
+    let tw2cnConverter = null;
+    function initOpenCC() {
+      try { if (window.OpenCC && typeof window.OpenCC.Converter === 'function') tw2cnConverter = window.OpenCC.Converter({ from: 'tw', to: 'cn' }); } catch (_) { tw2cnConverter = null; }
+    }
+    function zhOf(text) {
+      const key = String(text || '').replace(/\s+/g, ' ').trim();
+      if (!Object.prototype.hasOwnProperty.call(ZH_TW, key)) return null;
+      const traditional = ZH_TW[key];
+      if (state.lang === 'hans' && tw2cnConverter) { try { return tw2cnConverter(traditional); } catch (_) {} }
+      return traditional;
+    }
+    function applyLanguage() {
+      document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+        const active = btn.dataset.langBtn === state.lang;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+      document.documentElement.lang = state.lang === 'hans' ? 'zh-Hans' : state.lang === 'hant' ? 'zh-Hant' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        if (!el.dataset.i18nEn) el.dataset.i18nEn = el.textContent.trim();
+        const english = el.dataset.i18nEn;
+        const zh = zhOf(english);
+        el.innerHTML = state.lang !== 'en' && zh ? english + '<span class="zh" lang="zh-Hant">' + zh + '</span>' : english;
+      });
+      document.querySelectorAll('h1,h2,h3,h4,p,li,button,th,td,summary,span,label').forEach(el => {
+        if (el.closest('.zh')) return;
+        if (!el.dataset.i18nEn) el.dataset.i18nEn = el.textContent.trim();
+        const english = el.dataset.i18nEn;
+        const zh = zhOf(english);
+        let line = el.querySelector(':scope > .zh');
+        if (state.lang !== 'en' && zh) {
+          if (!line) { line = document.createElement('span'); line.className = 'zh'; line.lang = 'zh-Hant'; el.appendChild(line); }
+          line.textContent = zh;
+          line.hidden = false;
+        } else if (line) line.remove();
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-lang-btn]').forEach(btn => btn.addEventListener('click', () => {
+        state.lang = btn.dataset.langBtn;
+        if (state.lang === 'hans' && !tw2cnConverter) initOpenCC();
+        try { localStorage.setItem('workplaceDeckLang', state.lang); } catch (_) {}
+        applyLanguage();
+      }));
+      try { state.lang = localStorage.getItem('workplaceDeckLang') || 'en'; } catch (_) { state.lang = 'en'; }
+      if (state.lang === 'hans') initOpenCC();
+      applyLanguage();
       renderTask1();
       renderTask2();
       renderTask3();
       renderTask4();
       renderTask5();
       renderVideoQuizzes();
+      applyLanguage();
 
       // Main Tab Clicks
       document.querySelectorAll('.tab-btn').forEach(btn => {
