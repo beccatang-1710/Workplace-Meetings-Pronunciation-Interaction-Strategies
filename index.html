@@ -1,0 +1,2977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAN3107 Interactive Teaching Deck: Workplace Meetings &amp; Pronunciation</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f0f7ff;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    .blob-bg {
+      background-image: radial-gradient(circle at 10% 20%, rgba(14, 116, 144, 0.08) 0%, transparent 25%),
+                        radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 30%);
+    }
+    .stress-dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #0284c7;
+      border-radius: 9999px;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+      transition: all 0.2s ease;
+    }
+    .word-token {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.35rem 0.5rem;
+      margin: 0.25rem 0.15rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s ease;
+      border: 2px solid transparent;
+    }
+    .word-token:hover {
+      background-color: #e0f2fe;
+      border-color: #7dd3fc;
+    }
+    .word-token.selected {
+      background-color: #dbeafe;
+      border-color: #0284c7;
+      font-weight: 700;
+      color: #0369a1;
+    }
+    .word-token.correct {
+      background-color: #dcfce7;
+      border-color: #16a34a;
+      color: #15803d;
+      font-weight: 700;
+    }
+    .word-token.missed {
+      background-color: #fef9c3;
+      border-color: #ca8a04;
+      color: #854d0e;
+      font-weight: 700;
+    }
+    .word-token.wrong {
+      background-color: #fee2e2;
+      border-color: #dc2626;
+      color: #b91c1c;
+    }
+    .syl-pill {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      margin: 0 2px;
+      border-radius: 0.375rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .teacher-note {
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(to right, #fffbeb, #fef3c7);
+    }
+    .slide-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col blob-bg">
+
+  <!-- Top Navigation & Teacher Toolbar -->
+  <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg border-b border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Workplace Meetings: Pronunciation &amp; Interaction Strategies</h1>
+        <p class="text-xs text-slate-300 mt-0.5">Presented by Rebecca Tang</p>
+      </div>
+
+      <!-- Global Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- View Mode Toggle -->
+        <button id="btnViewMode" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 flex items-center gap-1.5 transition">
+          <span id="viewModeIcon">📑</span>
+          <span id="viewModeText">Slide-by-Slide Mode: OFF</span>
+        </button>
+
+        <!-- Teacher Mode Toggle -->
+        <button id="btnTeacherMode" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 flex items-center gap-1.5 transition">
+          <span>🎓</span>
+          <span id="teacherModeText">Teacher Mode: OFF</span>
+        </button>
+
+        <!-- Reveal All Answers in Active Tab -->
+        <button id="btnRevealAll" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 flex items-center gap-1.5 transition">
+          <span>✨</span>
+          <span>Show Tab Answers</span>
+        </button>
+
+        <!-- Reset Active Tab -->
+        <button id="btnResetTab" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 flex items-center gap-1.5 transition">
+          <span>↺</span>
+          <span>Reset Tab</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Module Tabs Bar -->
+    <nav class="bg-slate-800/90 border-t border-slate-700/80 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-4 flex items-center gap-1 py-1.5" id="mainTabBar" role="tablist">
+        <button type="button" data-tab="tab-overview" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 bg-cyan-600 text-white shadow">
+          <span>🎯</span> <span>Learning Objectives</span>
+        </button>
+        <button type="button" data-tab="tab-task1" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60">
+          <span>1️⃣</span> <span>Task 1: Word Stress &amp; Silent ‘e’</span>
+        </button>
+        <button type="button" data-tab="tab-task2" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60">
+          <span>2️⃣</span> <span>Task 2: Multisyllabic Words</span>
+        </button>
+        <button type="button" data-tab="tab-task3" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60">
+          <span>3️⃣</span> <span>Task 3: Sentence Stress</span>
+        </button>
+        <button type="button" data-tab="tab-task4" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60">
+          <span>4️⃣</span> <span>Task 4: Active Listening</span>
+        </button>
+        <button type="button" data-tab="tab-task5" class="tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60">
+          <span>5️⃣</span> <span>Task 5 &amp; 6: Meeting Interaction</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Slide-by-Slide Presentation Navigator Bar (Visible when Slide Mode is ON) -->
+  <div id="slideNavBanner" class="hidden bg-cyan-950 text-cyan-100 border-b border-cyan-800 px-4 py-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2 text-xs sm:text-sm font-medium">
+        <span class="px-2 py-0.5 rounded bg-cyan-800 text-cyan-200 font-bold" id="slideCounterBadge">Slide 1 / 20</span>
+        <span id="slideTitleBadge" class="text-cyan-100 font-semibold">Learning Objectives</span>
+        <span class="text-cyan-400 text-xs hidden md:inline">(Use ⬅️ ➡️ arrow keys or buttons to step through cards)</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnPrevSlide" type="button" class="px-3 py-1 rounded bg-cyan-800 hover:bg-cyan-700 text-white text-xs font-semibold transition">← Previous Card</button>
+        <button id="btnNextSlide" type="button" class="px-3 py-1 rounded bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition">Next Card →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 text-sm">
+    <span id="toastIcon" class="text-lg">🔊</span>
+    <span id="toastText">Playing audio...</span>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-8">
+
+    <!-- ==========================================
+         TAB 0: OVERVIEW & MEETING STRUCTURE
+         ========================================== -->
+    <section id="tab-overview" class="tab-panel space-y-6">
+      <!-- Card 1: Welcome & Learning Objectives (Slide 1) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Learning Objectives">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-100 text-cyan-800">
+            📌 Lesson Overview
+          </span>
+          <span class="text-xs text-slate-500">Check each objective as you work through the lesson.</span>
+        </div>
+
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">Learning Objectives</h2>
+        <p class="text-slate-600 mb-6 text-sm sm:text-base">
+          Welcome! In this interactive lesson, we will practise clear English pronunciation and effective communication skills for workplace meetings. By the end of this lesson, you will be able to:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="objectivesList">
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/50 cursor-pointer transition">
+            <input type="checkbox" class="obj-check mt-1 w-4 h-4 accent-cyan-600 rounded" />
+            <div>
+              <span class="font-bold text-slate-800 block text-sm sm:text-base">1. Use word stress &amp; sentence stress</span>
+              <span class="text-xs text-slate-600">Stress two-syllable nouns/verbs, suffixes (<em>-ic, -tion, -sion</em>), and key content words to communicate ideas clearly (Tasks 1 &amp; 3).</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/50 cursor-pointer transition">
+            <input type="checkbox" class="obj-check mt-1 w-4 h-4 accent-cyan-600 rounded" />
+            <div>
+              <span class="font-bold text-slate-800 block text-sm sm:text-base">2. Decode multisyllabic words &amp; silent ‘e’</span>
+              <span class="text-xs text-slate-600">Break down long words using prefixes, suffixes, vowel sounds, and the silent ‘e’ rule (Tasks 1c &amp; 2).</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/50 cursor-pointer transition">
+            <input type="checkbox" class="obj-check mt-1 w-4 h-4 accent-cyan-600 rounded" />
+            <div>
+              <span class="font-bold text-slate-800 block text-sm sm:text-base">3. Demonstrate ‘active listening’ in meetings</span>
+              <span class="text-xs text-slate-600">Use verbal responses (acknowledging, clarifying, giving feedback) and non-verbal cues like eye contact (Task 4).</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/50 cursor-pointer transition">
+            <input type="checkbox" class="obj-check mt-1 w-4 h-4 accent-cyan-600 rounded" />
+            <div>
+              <span class="font-bold text-slate-800 block text-sm sm:text-base">4. Apply effective interaction strategies</span>
+              <span class="text-xs text-slate-600">Politely interrupt, ask for clarification, and invite quieter team members to contribute (Task 5).</span>
+            </div>
+          </label>
+
+          <label class="flex items-start gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-cyan-50/50 cursor-pointer transition md:col-span-2">
+            <input type="checkbox" class="obj-check mt-1 w-4 h-4 accent-cyan-600 rounded" />
+            <div>
+              <span class="font-bold text-slate-800 block text-sm sm:text-base">5. Check understanding</span>
+              <span class="text-xs text-slate-600">Apply interaction strategies to check others’ understanding and clarify points in meetings (Task 6).</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="teacher-note hidden mt-5 p-4 rounded-xl text-sm text-amber-950">
+          <strong>🎓 Teacher’s Note (Lesson Map):</strong> This lesson is organized into <strong>6 logical tasks</strong> progressing from <em>Word-Level Pronunciation</em> (Tasks 1–2) to <em>Sentence Stress</em> (Task 3) and <em>Workplace Meeting Interaction</em> (Tasks 4–6).
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ==========================================
+         TAB 1: TASK 1 — WORD STRESS & SILENT 'E'
+         (Originally Slides 11-19: Task 5, 5a, 5b, Silent e, 5c)
+         ========================================== -->
+    <section id="tab-task1" class="tab-panel hidden space-y-6">
+      <!-- Intro Banner (Slide 11) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 1: Word Stress & Silent 'e'">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-100 text-cyan-800">
+            Task 1 • Pronunciation Strategies
+          </span>
+          
+        </div>
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Task 1: Word Stress &amp; the Silent ‘e’ Rule</h2>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          Understanding <strong>word stress</strong> and the <strong>silent ‘e’ pattern</strong> can help you speak clearly in workplace meetings. A stressed syllable stands out through greater prominence—often length, loudness, or a change in pitch. The silent ‘e’ pattern can change the vowel sound in a word.
+        </p>
+
+        <!-- Task 1a: Two-Syllable Nouns vs Verbs (Slides 12-14) -->
+        <div class="bg-gradient-to-r from-sky-50 to-indigo-50 rounded-xl p-5 border border-sky-200 mb-6">
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Task 1a: Word Stress in Two-Syllable Nouns &amp; Verbs</h3>
+          <p class="text-sm text-slate-700 mb-4">
+            The same two-syllable word can sometimes be both a <strong>noun</strong> and a <strong>verb</strong>, and we stress them differently!
+            <span class="block mt-1 text-xs text-slate-500">*Note: Syllables are the units of pronunciation in a word. Usually, you can tell the number of syllables by the number of vowel sounds.</span>
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+            <div class="bg-white p-4 rounded-xl border-2 border-sky-400 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded bg-sky-100 text-sky-800">Pattern 1: NOUNS</span>
+                <span class="text-sm font-bold text-sky-700">● ○ (1st Syllable Stressed)</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2">In two-syllable nouns, we usually put the stress on the <strong>first syllable</strong>.</p>
+              <p class="text-xs font-semibold text-slate-800 mt-2">Example: “We saw a sharp <span class="underline decoration-sky-500 decoration-2 font-extrabold text-sky-700">DE</span>crease in costs.”</p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border-2 border-indigo-400 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold uppercase px-2.5 py-1 rounded bg-indigo-100 text-indigo-800">Pattern 2: VERBS</span>
+                <span class="text-sm font-bold text-indigo-700">○ ● (2nd Syllable Stressed)</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2">In two-syllable verbs, we often put the stress on the <strong>second syllable</strong>.</p>
+              <p class="text-xs font-semibold text-slate-800 mt-2">Example: “We need to de<span class="underline decoration-indigo-500 decoration-2 font-extrabold text-indigo-700">CREASE</span> plastic waste.”</p>
+            </div>
+          </div>
+
+          <!-- Interactive Comparison Table (Slide 14) -->
+          <div class="overflow-x-auto bg-white rounded-xl border border-slate-200">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                  <th class="py-3 px-4 font-bold">Word</th>
+                  <th class="py-3 px-4 font-bold text-sky-800">As a Noun (Stress 1st: ● ○)</th>
+                  <th class="py-3 px-4 font-bold text-indigo-800">As a Verb (Stress 2nd: ○ ●)</th>
+                  <th class="py-3 px-4 font-bold">Workplace Context Example</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200" id="nounVerbTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mini Interactive Quiz on Noun vs Verb Stress -->
+        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h4 class="font-bold text-slate-900 text-base">🎯 Quick Check: Noun (1st Syllable) or Verb (2nd Syllable)?</h4>
+            <span class="text-xs text-slate-500">Click the correct stressed form for each workplace sentence!</span>
+          </div>
+          <div id="nvQuizContainer" class="space-y-3"></div>
+        </div>
+      </article>
+
+      <!-- Card 2: Word Stress with Suffixes -ic, -tion, -sion & Video (Slides 15-16) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 1b: Suffix Stress (-ic, -tion, -sion) & Video">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-100 text-cyan-800">
+            Task 1b • Suffix Word Stress Practice
+          </span>
+          <span class="text-xs text-slate-500">Click any syllable to test the stress rule!</span>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Word Stress Before Suffixes: <code class="text-cyan-700">-ic</code>, <code class="text-cyan-700">-tion</code>, and <code class="text-cyan-700">-sion</code></h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-4">
+          Words in English that end with certain suffixes* often have the stress placed on the <strong>syllable right before the suffix</strong> (the <strong>second-last syllable</strong>).
+          <span class="block text-xs text-slate-500 mt-1">*A <strong>suffix</strong> is a group of letters attached to the end of a word to form a related word.</span>
+        </p>
+
+        <!-- Interactive Syllable Stress Clicker Grid (Slide 15) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="suffixStressGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Videos for Task 1b (Slide 16 + Oxford Online English) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 bg-slate-50 p-5 rounded-xl border border-slate-200">
+          <div class="space-y-2">
+            <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-amber-100 text-amber-800">📺 Video Lesson</span>
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Mini English Lessons: Word Stress (British Council)</h4>
+            <p class="text-xs text-slate-600">Learn why stressing the right syllable makes your English much easier to understand (e.g. <em>HAP-py</em> vs <em>des-SERT</em>, and <em>CON-tent</em> vs <em>con-TENT</em>).</p>
+            <div class="aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/O-sOjBpYJCM" title="Mini English lessons: Word stress" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div id="vwQuiz_v1" class="mt-3 pt-3 border-t border-slate-200"></div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-red-100 text-red-700">📺 Extra Video Lesson</span>
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Syllables and Word Stress (Oxford Online English)</h4>
+            <p class="text-xs text-slate-600">Reviews two-syllable noun and verb stress, common patterns for <em>-ic</em>, <em>-tion</em>, and <em>-sion</em> words, and repeat-after-me practice.</p>
+            <div class="aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/Vu6UVwkUgzc" title="Syllables and Word Stress - Oxford Online English" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div id="vwQuiz_v2" class="mt-3 pt-3 border-t border-slate-200"></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Task 1c — Silent 'e' Rule & Practice Studio (Slides 17-19) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 1c: Silent 'e' Rule & Pronunciation Practice">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+            Task 1c • Silent ‘e’ Rule
+          </span>
+          
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Pronunciation Strategy: The Silent ‘e’ Rule</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          A final <strong>‘e’</strong> is often silent. In the common vowel-consonant-e pattern, it signals that the preceding vowel usually has a “long” sound, as in <em>mate</em> and <em>hope</em>. A final <em>e</em> can also signal soft <em>c</em> or <em>g</em>, as in <em>lace</em> and <em>stage</em>. English spelling has exceptions.
+        </p>
+
+        <!-- Minimal Pairs Comparison (Slide 18) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col items-center text-center">
+            <span class="text-xs font-bold uppercase text-amber-800 mb-1">Short ‘o’ vs Long ‘o’ (/ɒ/ → /əʊ/)</span>
+            <div class="text-lg font-extrabold text-slate-900 my-1">hop <span class="text-slate-400 mx-1">→</span> h<span class="text-emerald-600 underline">o</span>p<span class="text-slate-400">e</span></div>
+            <div class="flex gap-2 mt-2">
+              <button type="button" onclick="speakText('hop')" class="px-3 py-1 rounded bg-white border border-amber-300 text-xs font-semibold hover:bg-amber-100">🔊 hop</button>
+              <button type="button" onclick="speakText('hope')" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">🔊 hope</button>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col items-center text-center">
+            <span class="text-xs font-bold uppercase text-amber-800 mb-1">Short ‘a’ vs Long ‘a’ (/æ/ → /eɪ/)</span>
+            <div class="text-lg font-extrabold text-slate-900 my-1">plan <span class="text-slate-400 mx-1">→</span> pl<span class="text-emerald-600 underline">a</span>n<span class="text-slate-400">e</span></div>
+            <div class="flex gap-2 mt-2">
+              <button type="button" onclick="speakText('plan')" class="px-3 py-1 rounded bg-white border border-amber-300 text-xs font-semibold hover:bg-amber-100">🔊 plan</button>
+              <button type="button" onclick="speakText('plane')" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">🔊 plane</button>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col items-center text-center">
+            <span class="text-xs font-bold uppercase text-amber-800 mb-1">Short ‘i’ vs Long ‘i’ (/ɪ/ → /aɪ/)</span>
+            <div class="text-lg font-extrabold text-slate-900 my-1">slid <span class="text-slate-400 mx-1">→</span> sl<span class="text-emerald-600 underline">i</span>d<span class="text-slate-400">e</span></div>
+            <div class="flex gap-2 mt-2">
+              <button type="button" onclick="speakText('slid')" class="px-3 py-1 rounded bg-white border border-amber-300 text-xs font-semibold hover:bg-amber-100">🔊 slid</button>
+              <button type="button" onclick="speakText('slide')" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">🔊 slide</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9 Silent 'e' Words Practice & Recording Grid (Slide 19) -->
+        <div class="mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h4 class="font-bold text-slate-900 text-base">🎙️ Task 1c Practice Studio: Practise 9 Meeting Words</h4>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs text-slate-500">Listen to the model, practise each word aloud, then mark it as practised.</span>
+              <button type="button" onclick="playSilentERecording()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">🔊 Play Recording</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="silentEGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Video for Silent 'e' -->
+        <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200">
+          <div class="flex flex-col lg:flex-row gap-5 items-center">
+            <div class="w-full lg:w-7/12 aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/xLoeAOCnQDc" title="The Silent E (English Uncovered)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="w-full lg:w-5/12 space-y-2">
+              <span class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-emerald-100 text-emerald-800">📺 Video Lesson</span>
+              <h4 class="text-lg font-bold text-slate-900">The Silent ‘E’ in English (Kris Hagan)</h4>
+              <p class="text-xs sm:text-sm text-slate-600">
+                Explains how a final silent ‘e’ can signal a long vowel and mark <em>c</em> or <em>g</em> as a soft consonant, as in <em>arrange</em> and <em>engage</em>.
+              </p>
+            </div>
+          </div>
+          <div id="vwQuiz_v3" class="mt-4 pt-4 border-t border-slate-200"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: TASK 2 — DECODING MULTISYLLABIC WORDS
+         (Originally Slides 26-43: Task 3, 3a, 3b, 3c + Liveworksheets)
+         ========================================== -->
+    <section id="tab-task2" class="tab-panel hidden space-y-6">
+      <!-- Intro & 3 Steps (Slides 26-27) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 2: Decoding Multisyllabic Words">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-100 text-purple-800">
+            Task 2 • Multisyllabic Words
+          </span>
+          
+        </div>
+
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Task 2: Decoding Multisyllabic Words</h2>
+        <p class="text-slate-600 text-sm sm:text-base mb-4">
+          In workplace meetings, many words contain more than one syllable, such as <button type="button" onclick="speakText('ultimately')" class="font-bold text-purple-700 underline">🔊 ultimately</button> and <button type="button" onclick="speakText('sustainable')" class="font-bold text-purple-700 underline">🔊 sustainable</button>. These are called <strong>multisyllabic words</strong>. Breaking them down by their syllables makes them much easier to pronounce!
+        </p>
+
+        <div class="p-4 rounded-xl bg-purple-50 border border-purple-200 mb-5 text-sm">
+          <strong>📖 Syllable:</strong> A syllable is a unit of pronunciation, usually built around one vowel sound. A vowel team such as <em>ai</em> can represent a single vowel sound.
+        </div>
+
+        <h3 class="font-bold text-slate-900 text-base mb-3">3 Steps to Break Down Multisyllabic Words:</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="inline-block w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center mb-2">1</span>
+            <h4 class="font-bold text-slate-900 text-sm">Identify Prefixes &amp; Suffixes</h4>
+            <p class="text-xs text-slate-600 mt-1">Spot familiar word beginnings (<em>re-, eco-, under-</em>) and endings (<em>-able, -tion, -ment</em>).</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="inline-block w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center mb-2">2</span>
+            <h4 class="font-bold text-slate-900 text-sm">Identify Remaining Vowel Sounds</h4>
+            <p class="text-xs text-slate-600 mt-1">Count the vowel sounds in the root word (remembering vowel teams like <em>ai</em> or <em>ea</em> make one sound).</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="inline-block w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center mb-2">3</span>
+            <h4 class="font-bold text-slate-900 text-sm">Pronounce Slowly, Then Blend</h4>
+            <p class="text-xs text-slate-600 mt-1">Say each syllable chunk slowly, then blend them smoothly with the correct word stress.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Task 2a — Prefixes Interactive Matcher (Slides 28-31) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 2a: Common Prefixes">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-100 text-purple-800">
+            Task 2a (Part 1) • Identifying Prefixes
+          </span>
+          <button type="button" id="btnCheckPrefixes" class="px-3 py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition">Check Prefix Answers</button>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">What is a Prefix?</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          A <strong>prefix</strong> is a group of letters added to the <strong>beginning</strong> of a word to change its meaning. Select the correct meaning for each common prefix below, then click the speaker button to practise pronouncing the examples!
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4 font-bold">Common Prefix</th>
+                <th class="py-3 px-4 font-bold">Select Meaning (Interactive)</th>
+                <th class="py-3 px-4 font-bold">Examples (Click to Listen)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200" id="prefixTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="teacher-note hidden mt-4 p-3.5 rounded-xl text-xs sm:text-sm text-amber-950">
+          <strong>🎓 Teacher’s Note:</strong> Practise the prefixes and examples aloud. The root often carries the main stress, while prefixes such as <em>eco-</em>, <em>extra-</em>, <em>over-</em>, and <em>under-</em> may carry secondary stress depending on the word.
+        </div>
+      </article>
+
+      <!-- Card 3: Task 2a (Part 2) — Suffixes Explorer & Quiz (Slides 32-35) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 2a: Suffixes & Identification Quiz">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-100 text-purple-800">
+            Task 2a (Part 2) • Common Suffixes &amp; Quiz
+          </span>
+          <button type="button" id="btnRevealSuffixExamples" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition">Fill Model Examples</button>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">What is a Suffix?</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          A <strong>suffix</strong> is a group of letters added to the <strong>end</strong> of a word to form a related word. Many suffixes also indicate the word’s <strong>part of speech</strong> (such as noun, verb, or adjective). Discuss with a partner and type another example for each suffix.
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4 font-bold">Common Suffix</th>
+                <th class="py-3 px-4 font-bold">Part of Speech</th>
+                <th class="py-3 px-4 font-bold">Examples</th>
+                <th class="py-3 px-4 font-bold">Your Example (Type or Reveal)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200" id="suffixTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Slide 35 Interactive Prefix/Suffix Identification Exercise -->
+        <div class="bg-purple-50/70 rounded-xl p-5 border border-purple-200">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">✍️ Practice: Identify the Prefix or Suffix</h4>
+              <p class="text-xs text-slate-600">Type the prefix (with a hyphen after, e.g. <code>re-</code>) or suffix (with a hyphen before, e.g. <code>-able</code>) for each word below.</p>
+            </div>
+            <button type="button" id="btnCheckAffixQuiz" class="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition">Check Answers</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4" id="affixQuizGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4: Task 2b — Counting Vowel Sounds & Syllables (Slides 36-40) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 2b: Vowel Sounds & Syllable Revealer">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-100 text-purple-800">
+            Task 2b • Vowel Sounds &amp; Syllables
+          </span>
+          <button type="button" id="btnRevealAllSyllables" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">🎨 Reveal All Syllables</button>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Task 2b: Identifying Vowel Sounds to Divide Syllables</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          Counting distinct <strong>vowel sounds</strong> (rather than vowel letters) is a useful first step for estimating syllables. Pronounce the word to check your count, using these tips:
+        </p>
+
+        <!-- 3 Tips Cards (Slides 37-38) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+            <span class="text-xs font-extrabold uppercase text-amber-800">Tip 1: Single Vowels</span>
+            <p class="text-xs sm:text-sm text-slate-700 mt-1.5">
+              The word <strong>‘c<span class="text-red-600 underline">o</span>st’</strong> contains one vowel sound → <strong>1 syllable</strong>.
+              In contrast, <strong>‘c<span class="text-red-600 underline">a</span>rb<span class="text-red-600 underline">o</span>n’</strong> includes two vowel sounds → <strong>2 syllables</strong> (<em>car-bon</em>).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-sky-50/70 border border-sky-200">
+            <span class="text-xs font-extrabold uppercase text-sky-800">Tip 2: Combined Vowels (1 Sound)</span>
+            <p class="text-xs sm:text-sm text-slate-700 mt-1.5">
+              Sometimes two vowels combine to make <strong>one sound</strong>, such as <strong>‘ai’</strong> in <em>sust<span class="text-sky-700 underline font-bold">ai</span>n</em> (2 syllables) and <strong>‘ea’</strong> in <em><span class="text-sky-700 underline font-bold">ea</span>ch</em> (1 syllable). Count them as one vowel sound!
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+            <span class="text-xs font-extrabold uppercase text-emerald-800">Tip 3: The Letter ‘Y’</span>
+            <p class="text-xs sm:text-sm text-slate-700 mt-1.5">
+              At the start of these words, <strong>‘y’</strong> represents a consonant sound (<em><strong>y</strong>es, <strong>y</strong>ellow</em>). In words such as <em>sk<span class="text-emerald-700 underline font-bold">y</span></em>, <em>rec<span class="text-emerald-700 underline font-bold">y</span>cle</em>, and <em>activit<span class="text-emerald-700 underline font-bold">y</span></em>, it represents a vowel sound.
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Syllable Counter & Colour Revealer (Slides 39-40) -->
+        <h4 class="font-bold text-slate-900 text-base mb-3">🔢 Count the Syllables &amp; Click “Reveal Syllables”:</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="syllableCardsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </article>
+
+      <!-- Card 5: Task 2c — Interactive Liveworksheets Pronunciation Lab + Video (Slides 41-43) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 2c: Multisyllabic Word Families & Pronunciation Lab">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+            Task 2c • Interactive Pronunciation Lab
+          </span>
+          <span class="text-xs text-slate-500">Interactive Pronunciation &amp; Word Family Practice</span>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Task 2c: Practise Multisyllabic Words &amp; Word Families</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-4">
+          Listen to the model, practise saying each word or word pair aloud, and mark it as practised. Notice how some suffixes, such as <strong>-ity</strong>, can shift the stressed syllable. For additional practice, open one of the worksheets:
+          <a href="https://www.liveworksheets.com/w/en/workplace-communication/7778787" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline font-semibold ml-1">Worksheet 1</a> •
+          <a href="https://www.liveworksheets.com/worksheet/en/english/7778877" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline font-semibold">Worksheet 2</a> •
+          <a href="https://www.liveworksheets.com/worksheet/en/english/7778861" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline font-semibold">Worksheet 3</a>
+        </p>
+
+        <!-- Sub-tabs for the 3 Liveworksheets sets -->
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button type="button" data-lw="set1" class="lw-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white">Set 1: Prefix Words</button>
+          <button type="button" data-lw="set2" class="lw-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Set 2: -able / -al / -ise vs -ity</button>
+          <button type="button" data-lw="set3" class="lw-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Set 3: -ment / -tion / -cy Families</button>
+        </div>
+
+        <div id="lwLabContainer" class="mb-6">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Video on Syllable Stress in Long Words -->
+        <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200">
+          <div class="flex flex-col lg:flex-row gap-5 items-center">
+            <div class="w-full lg:w-7/12 aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/vr1XCCA9SCA" title="Syllable Stress in Long English Words" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="w-full lg:w-5/12 space-y-2">
+              <span class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-purple-100 text-purple-800">📺 Video Lesson</span>
+              <h4 class="text-lg font-bold text-slate-900">Syllable Stress in Long English Words (engVid)</h4>
+              <p class="text-xs sm:text-sm text-slate-600">
+                Watch how stress shifts when we build longer words from root words (e.g., <em><strong>e</strong>qual → e<strong>qual</strong>ity</em>, <em>in<strong>form</strong> → in-for-<strong>ma</strong>-tion</em>, <em><strong>re</strong>sident → re-si-<strong>den</strong>-tial</em>)—just like the pairs in Set 2 and Set 3 above!
+              </p>
+            </div>
+          </div>
+          <div id="vwQuiz_v4" class="mt-4 pt-4 border-t border-slate-200"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: TASK 3 — SENTENCE STRESS IN MEETINGS
+         (Originally Slides 2-7, 20-21: Task 7, 7a, 7b, 7c)
+         ========================================== -->
+    <section id="tab-task3" class="tab-panel hidden space-y-6">
+      <!-- Card 1: Content Words vs Function Words (Slides 2-5) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 3: Sentence Stress — Content vs Function Words">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800">
+            Task 3 • Sentence Stress
+          </span>
+          
+        </div>
+
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Task 3: Pronunciation Strategies — Sentence Stress</h2>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          In English, <strong>sentence stress</strong> helps listeners follow the main idea. <strong>Content words</strong> carry much of the meaning and often receive stress; <strong>function words</strong> connect ideas and are often unstressed. Either type can be stressed for emphasis or contrast.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <!-- Content Words Table (Slides 3-4) -->
+          <div class="rounded-xl border-2 border-sky-500 bg-sky-50/40 p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-extrabold text-sky-900">🔊 Content Words (often stressed)</h3>
+              <span class="stress-dot" title="Stressed word marker"></span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 mb-3">
+              <strong>Words that carry much of the sentence’s meaning</strong>, such as nouns, main verbs, adjectives, and adverbs. They often stand out through greater length, loudness, or pitch movement.
+            </p>
+            <table class="w-full text-left bg-white rounded-lg overflow-hidden border border-sky-200 text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-sky-100 text-sky-900">
+                  <th class="py-2 px-3 font-bold">Word Type</th>
+                  <th class="py-2 px-3 font-bold">Meeting Examples (Click to hear)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-sky-100">
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Verbs</td>
+                  <td class="py-2 px-3"><button type="button" onclick="speakText('promote, advertise, launch')" class="text-sky-700 hover:underline font-medium">🔊 promote, advertise, launch</button></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Nouns</td>
+                  <td class="py-2 px-3"><button type="button" onclick="speakText('social media, poster, flyer')" class="text-sky-700 hover:underline font-medium">🔊 social media, poster, flyer</button></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Adjectives</td>
+                  <td class="py-2 px-3"><button type="button" onclick="speakText('convenient, engaging, useful')" class="text-sky-700 hover:underline font-medium">🔊 convenient, engaging, useful</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Function Words Table (Slides 3 & 5) -->
+          <div class="rounded-xl border-2 border-slate-300 bg-slate-50 p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-extrabold text-slate-700">🔉 Function Words (often unstressed)</h3>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-700">Quick &amp; Weak</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 mb-3">
+              <strong>Words that express grammatical relationships</strong>, such as articles, conjunctions, and prepositions. They are often spoken quickly and softly, unless the speaker emphasizes them.
+            </p>
+            <table class="w-full text-left bg-white rounded-lg overflow-hidden border border-slate-200 text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-slate-200 text-slate-800">
+                  <th class="py-2 px-3 font-bold">Word Type</th>
+                  <th class="py-2 px-3 font-bold">Examples</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Articles</td>
+                  <td class="py-2 px-3 text-slate-600">a, an, the</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Conjunctions</td>
+                  <td class="py-2 px-3 text-slate-600">and, but, or</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-semibold">Prepositions</td>
+                  <td class="py-2 px-3 text-slate-600">in, at, on</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Task 3a & 3b — Interactive Sentence Stress Marker Activity (Slides 6-7 & 20) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 3a & 3b: Interactive Sentence Stress Practice">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800">
+            Task 3a &amp; 3b • Interactive Stress Marker Practice
+          </span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="btnCheckStressSentences" class="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition">✔ Check My Stress Dots</button>
+            <button type="button" id="btnShowStressKey" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">✨ Reveal Answer Key</button>
+            <button type="button" id="btnResetStressSentences" class="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold transition">↺ Clear</button>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-1">Place the Stress Dot (<span class="stress-dot align-middle mx-1"></span>) Over Stressed Content Words</h3>
+        <p class="text-slate-600 text-xs sm:text-sm mb-4">
+          For Task 3a, listen to the recording and click the <strong>content words</strong> that should carry a blue stress dot. In pairs, practise reading the sentences aloud. For Task 3b, follow the drag-and-drop directions below.
+        </p>
+
+        <div id="stressSentencesContainer" class="space-y-4">
+          <!-- Populated by JS -->
+        </div>
+      </article>
+
+      <!-- Card 3: Task 3c — Shifting Sentence Stress & Video (Slide 21) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 3c: How Stress Changes Meaning & Video">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800">
+            Task 3c • Shifting Stress &amp; Rhythm
+          </span>
+          <a href="https://www.instagram.com/reel/CtL-c3IuTlB/?igshid=MzRlODBiNWFlZA" target="_blank" rel="noopener noreferrer" class="text-xs text-sky-700 underline font-semibold">🔗 Watch Short Reel</a>
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">How Shifting Stress Changes the Meaning of Your Message</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-4">
+          Stressing a different word can change what a speaker emphasizes. Click each word below to compare the possible implied meanings:
+        </p>
+
+        <!-- Interactive Meaning Shift Simulator -->
+        <div class="p-5 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 mb-6">
+          <div class="text-xs font-bold uppercase text-sky-800 mb-2">👆 Click any word below to stress it:</div>
+          <div class="flex flex-wrap gap-2 mb-4" id="meaningShiftButtons">
+            <!-- Populated by JS -->
+          </div>
+          <div id="meaningShiftResult" class="p-4 rounded-xl bg-white border border-sky-300 text-sm text-slate-800 shadow-sm">
+            Select a word above to see what the speaker may be emphasizing.
+          </div>
+        </div>
+
+        <!-- Embedded Video from PPT Slide 21 -->
+        <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200">
+          <div class="flex flex-col lg:flex-row gap-5 items-center">
+            <div class="w-full lg:w-7/12 aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/SR79TZbKRUU" title="Mini English lessons: Stress-timed and weak forms" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="w-full lg:w-5/12 space-y-2">
+              <span class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-amber-100 text-amber-800">📺 Video Lesson</span>
+              <h4 class="text-lg font-bold text-slate-900">Stress-Timed &amp; Weak Forms (British Council)</h4>
+              <p class="text-xs sm:text-sm text-slate-600">
+                Learn why English is a <strong>stress-timed language</strong> (like the beat in <em>“We ALL LIVE in a YEL-low SUB-ma-rine”</em>) and how unstressed function words like <em>can, of, than, a</em> become quick “weak forms” (/ə/).
+              </p>
+            </div>
+          </div>
+          <div id="vwQuiz_v5" class="mt-4 pt-4 border-t border-slate-200"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: TASK 4 — ACTIVE LISTENING IN MEETINGS
+         (Originally Slides 9-10: Task 5b)
+         ========================================== -->
+    <section id="tab-task4" class="tab-panel hidden space-y-6">
+      <!-- Card 1: Active Listening Brainstorm & 6 Strategies (Slides 9-10) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 4: Demonstrating Active Listening in Meetings">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-teal-100 text-teal-800">
+            Task 4 • Active Listening Skills
+          </span>
+          
+        </div>
+
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Task 4: Demonstrating ‘Active Listening’ in Meetings</h2>
+        <div class="p-4 rounded-xl bg-teal-50 border border-teal-200 mb-6">
+          <h3 class="font-bold text-teal-950 text-base">💬 Warm-Up Discussion Questions:</h3>
+          <ul class="list-disc list-inside text-sm text-teal-900 mt-1.5 space-y-1">
+            <li><strong>What can you say or do to show a colleague that you are listening?</strong> Think of one verbal response and one non-verbal cue.</li>
+          </ul>
+        </div>
+
+        <div class="bg-teal-50/50 rounded-2xl p-5 border border-teal-200 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-teal-100 text-teal-800">🧩 Matching Task</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-1">We Can Demonstrate ‘Active Listening’ By…</h3>
+              <p class="text-xs sm:text-sm text-slate-600">Match each example to the active listening strategy or cue it demonstrates. Use the audio buttons to hear the verbal examples or a short summary of each non-verbal cue.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="btnCheckAlMatching" class="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition">✔ Check Matches</button>
+              <button type="button" id="btnRevealAlMatching" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">✨ Show Matches</button>
+              <button type="button" id="btnResetAlMatching" class="px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold transition">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- Strategy Bank Reference Pills -->
+          <div class="mb-4 p-3 rounded-xl bg-white border border-teal-200">
+            <span class="text-xs font-bold uppercase text-slate-500 block mb-2">Strategy &amp; Cue Bank (4 Verbal Strategies + 2 Non-Verbal Cues):</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-900 border border-teal-300">💬 Acknowledging the suggestion</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-900 border border-sky-300">💬 Seeking clarification</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-300">💬 Seeking additional information</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-900 border border-purple-300">💬 Providing feedback on suggestions</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">👀 Maintaining eye contact</span>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">😊 Responding with facial expressions</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="alStrategyMatchingGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Interactive Active Listening Scenario Matcher -->
+        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+          <h4 class="font-bold text-slate-900 text-base mb-1">🎯 Interactive Practice: Match the Active Listening Function</h4>
+          <p class="text-xs text-slate-600 mb-4">Choose the active listening strategy each speaker demonstrates:</p>
+          <div id="activeListeningQuiz" class="space-y-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Videos for Active Listening & Agreeing/Disagreeing -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 bg-slate-50 p-5 rounded-xl border border-slate-200">
+          <div class="space-y-2">
+            <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-teal-100 text-teal-800">📺 Video 1: Active Listening</span>
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base">Active Listening Skills (Communication Coach Alex Lyon)</h4>
+            <p class="text-xs text-slate-600">Explains non-verbal cues (eye contact, open posture) and verbal responses (reflecting back, follow-up questions) in clear English.</p>
+            <div class="aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/7wUCyjiyXdg" title="Active Listening Skills" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div id="vwQuiz_v6" class="mt-3 pt-3 border-t border-slate-200"></div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-indigo-100 text-indigo-800">📺 Video 2: Giving Feedback on Suggestions</span>
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base">How to Agree or Disagree in a Meeting (British Council)</h4>
+            <p class="text-xs text-slate-600">Watch how colleagues acknowledge points and give polite feedback: <em>“I see what you mean, but…”</em> and <em>“OK, maybe you’ve got a point there.”</em></p>
+            <div class="aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/fQcga26aoL8" title="How to agree or disagree in English - British Council" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div id="vwQuiz_v7" class="mt-3 pt-3 border-t border-slate-200"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: TASK 5 & 6 — INTERACTION STRATEGIES & CHECKING UNDERSTANDING
+         (Tasks 5a/5b interaction strategies and Task 6 checking understanding)
+         ========================================== -->
+    <section id="tab-task5" class="tab-panel hidden space-y-6">
+      <!-- Card 1: Task 5a — Three Core Interaction Strategies (Slides 22-25) -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 5a: Meeting Interaction Strategies">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-100 text-blue-800">
+            Task 5 • Interaction Strategies in Meetings
+          </span>
+          
+        </div>
+
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Task 5: Effective Interaction Strategies in Meetings</h2>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          <strong>Scenario:</strong> You will attend a meeting with the <strong>volunteer coordinators</strong> to discuss ways to <strong>boost donations</strong> (and apply these strategies in your upcoming workplace meeting assessment). Learn these three essential interaction strategies to participate effectively:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Strategy A: Interrupting (Slide 23) -->
+          <div class="p-5 rounded-xl border-2 border-amber-400 bg-amber-50/40 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase px-2.5 py-0.5 rounded bg-amber-500 text-white">Strategy A</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-2">a. Interrupting Politely</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Politely interrupt a speaker when you have something important to add to the conversation.
+              </p>
+              <div class="mt-3 space-y-2 bg-white p-3 rounded-lg border border-amber-200 text-xs sm:text-sm font-medium text-slate-800">
+                <p>• “Excuse me, could I add something here?”</p>
+                <p>• “May I jump in for a moment?”</p>
+              </div>
+            </div>
+            <button type="button" onclick="speakText('Excuse me, could I add something here? May I jump in for a moment?')" class="mt-4 w-full py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition">🔊 Listen &amp; Repeat</button>
+          </div>
+
+          <!-- Strategy B: Asking for Clarification (Slide 24) -->
+          <div class="p-5 rounded-xl border-2 border-sky-400 bg-sky-50/40 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase px-2.5 py-0.5 rounded bg-sky-600 text-white">Strategy B</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-2">b. Asking for Clarification</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                If you do not fully understand a point, do not hesitate to ask the speaker to clarify or give an example.
+              </p>
+              <div class="mt-3 space-y-2 bg-white p-3 rounded-lg border border-sky-200 text-xs sm:text-sm font-medium text-slate-800">
+                <p>• “Could you please clarify what you mean by…?”</p>
+                <p>• “Can you give an example of…?”</p>
+              </div>
+            </div>
+            <button type="button" onclick="speakText('Could you please clarify what you mean by that? Can you give an example of how this would work?')" class="mt-4 w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition">🔊 Listen &amp; Repeat</button>
+          </div>
+
+          <!-- Strategy C: Asking for Contributions (Slide 25) -->
+          <div class="p-5 rounded-xl border-2 border-emerald-400 bg-emerald-50/40 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase px-2.5 py-0.5 rounded bg-emerald-600 text-white">Strategy C</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-2">c. Asking for Contributions</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Make sure to engage all members in the discussion by asking for their thoughts or opinions.
+              </p>
+              <div class="mt-3 space-y-2 bg-white p-3 rounded-lg border border-emerald-200 text-xs sm:text-sm font-medium text-slate-800">
+                <p>• “I’d like to hear your thoughts on this, [Name].”</p>
+                <p>• “[Name], what do you think about this idea?”</p>
+              </div>
+            </div>
+            <button type="button" onclick="speakText('I\'d like to hear your thoughts on this, Taylor. Taylor, what do you think about this idea?')" class="mt-4 w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">🔊 Listen &amp; Repeat</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Task 5b — Meeting Clips Analysis -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 5b: Meeting Interaction Skills">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-100 text-blue-800">
+            Task 5b • Meeting Clips Analysis
+          </span>
+          
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Task 5b: Watch the Meeting Clips &amp; Identify the Interaction Strategy</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          Watch each video, then choose the interaction strategy Speaker 2 demonstrates: <strong>interrupting politely</strong>, <strong>asking for clarification</strong>, or <strong>asking for contributions</strong>. Use the transcript to review the key phrases.
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5" id="meetingClipsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </article>
+
+      <!-- Card 3: Task 6 — Checking Understanding (Slides 44-45) + Video + Role-Play Generator -->
+      <article class="deck-card bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8" data-slide-title="Task 6: Checking Understanding in Meetings">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+            Task 6 • Checking Understanding
+          </span>
+          
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Task 6: Check Understanding in Meetings</h3>
+        <p class="text-slate-600 text-sm sm:text-base mb-5">
+          When a point is unclear or you want to confirm that others understand, ask a brief question or invite them to explain it in their own words. This helps prevent misunderstandings and keeps the meeting on track.
+        </p>
+
+        <!-- Slide 45 Interactive Quiz -->
+        <div class="bg-emerald-50/60 rounded-xl p-5 border border-emerald-200 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">✅ Quiz: Which Expressions Are Used to Check Understanding?</h4>
+              <p class="text-xs text-slate-600">Select all expressions below that are used to <strong>check understanding</strong> (either checking your own understanding or checking if others follow you), then click <strong>Check Answers</strong>!</p>
+            </div>
+            <button type="button" id="btnCheckUnderstandingQuiz" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">Check Answers</button>
+          </div>
+
+          <div class="space-y-2.5 mt-4" id="understandingQuizList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Video for Online & Workplace Meeting Phrases -->
+        <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200 mb-6">
+          <div class="flex flex-col lg:flex-row gap-5 items-center">
+            <div class="w-full lg:w-7/12 aspect-video rounded-xl overflow-hidden shadow bg-slate-900">
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/PLhAzAymMsY" title="40 English Phrases You Need for Online Meetings" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="w-full lg:w-5/12 space-y-2">
+              <span class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-blue-100 text-blue-800">📺 Video Lesson</span>
+              <h4 class="text-lg font-bold text-slate-900">40 English Phrases for Workplace &amp; Online Meetings (Maria Sheeran)</h4>
+              <p class="text-xs sm:text-sm text-slate-600">
+                Learn natural ways to jump into a discussion (<em>“Can I jump in here for a second?”</em>), ask someone to repeat or clarify (<em>“I didn’t catch that, can you say that again?”</em>), and close a meeting smoothly.
+              </p>
+            </div>
+          </div>
+          <div id="vwQuiz_v8" class="mt-4 pt-4 border-t border-slate-200"></div>
+        </div>
+
+        <!-- Bonus Classroom Role-Play Activity & Timer -->
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-md">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">🎭 Final Classroom Role-Play Activity</span>
+              <h4 class="text-lg sm:text-xl font-bold mt-2">Put It All Together: 3-Minute Group Meeting Practice</h4>
+            </div>
+            <!-- Classroom Timer -->
+            <div class="flex items-center gap-2 bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-700">
+              <span class="font-mono text-xl font-extrabold text-cyan-400" id="timerDisplay">03:00</span>
+              <button type="button" id="btnStartTimer" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-xs font-bold">Start</button>
+              <button type="button" id="btnResetTimer" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-semibold">Reset</button>
+            </div>
+          </div>
+
+          <p class="text-sm text-slate-300 mb-4">In groups, choose one scenario and hold a three-minute meeting. Give everyone a chance to contribute, use the interaction strategies from this tab, and check that the group understands the final decision. Use several target words as you speak.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+            <div class="p-4 rounded-xl bg-slate-800/90 border border-slate-700">
+              <h5 class="font-bold text-cyan-300 mb-1">🍔 Scenario A: Promoting the New Burger Meal</h5>
+              <p class="text-slate-300 mb-2">Your marketing team is meeting to decide how to promote a new burger meal (posters, flyers, 20% discount, or social media).</p>
+              <p class="text-slate-400 text-xs"><strong>Target Words:</strong> <em>promote, advertise, poster, flyer, discount, promotional, convenient, engaging</em></p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-800/90 border border-slate-700">
+              <h5 class="font-bold text-emerald-300 mb-1">🌱 Scenario B: “Donate a Dollar Day” Eco-Charity</h5>
+              <p class="text-slate-300 mb-2">You are meeting with volunteer coordinators to boost donations for an eco-friendly charity campaign.</p>
+              <p class="text-slate-400 text-xs"><strong>Target Words:</strong> <em>sustainable, eco-friendly, biodegradable, commitment, priority, reusable</em></p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+
+  <!-- Main Interactive Script -->
+  <script>
+    // ==========================================
+    // 1. DATA DEFINITIONS (100% Grounded in PPTX)
+    // ==========================================
+
+    // Task 1a: Two-syllable Noun vs Verb pairs (Slide 14)
+    const nounVerbPairs = [
+      {
+        word: 'decrease',
+        nounDisplay: 'DE-crease',
+        verbDisplay: 'de-CREASE',
+        nounPhonetic: '/ˈdiː.kriːs/',
+        verbPhonetic: '/dɪˈkriːs/',
+        example: 'We need to deCREASE (v.) expenses so we see a DEcrease (n.) in waste.'
+      },
+      {
+        word: 'export',
+        nounDisplay: 'EX-port',
+        verbDisplay: 'ex-PORT',
+        nounPhonetic: '/ˈek.spɔːt/',
+        verbPhonetic: '/ɪkˈspɔːt/',
+        example: 'Coffee is our main EXport (n.), and we exPORT (v.) it globally.'
+      },
+      {
+        word: 'increase',
+        nounDisplay: 'IN-crease',
+        verbDisplay: 'in-CREASE',
+        nounPhonetic: '/ˈɪŋ.kriːs/',
+        verbPhonetic: '/ɪnˈkriːs/',
+        example: 'To inCREASE (v.) donations, we need an INcrease (n.) in volunteers.'
+      },
+      {
+        word: 'present',
+        nounDisplay: 'PRE-sent',
+        verbDisplay: 'pre-SENT',
+        nounPhonetic: '/ˈprez.ənt/',
+        verbPhonetic: '/prɪˈzent/',
+        example: 'At PREsent (n.), Sarah will preSENT (v.) her marketing ideas.'
+      },
+      {
+        word: 'permit',
+        nounDisplay: 'PER-mit',
+        verbDisplay: 'per-MIT',
+        nounPhonetic: '/ˈpɜː.mɪt/',
+        verbPhonetic: '/pəˈmɪt/',
+        example: 'The city will perMIT (v.) the event once we get a PERmit (n.).'
+      },
+      {
+        word: 'record',
+        nounDisplay: 'RE-cord',
+        verbDisplay: 're-CORD',
+        nounPhonetic: '/ˈrek.ɔːd/',
+        verbPhonetic: '/rɪˈkɔːd/',
+        example: 'Please reCORD (v.) the meeting minutes for our official REcord (n.).'
+      }
+    ];
+
+    const nvQuizQuestions = [
+      {
+        id: 'nv1',
+        sentence: '1. “Our team plans to ________ the new burger campaign findings at 2:00 PM.”',
+        options: ['PRE-sent (Noun — 1st syllable)', 'pre-SENT (Verb — 2nd syllable)'],
+        correct: 1,
+        explanation: 'Here “present” is an action (a verb: to give a presentation), so the stress is on the 2nd syllable: pre-SENT.'
+      },
+      {
+        id: 'nv2',
+        sentence: '2. “Good news! There has been a 20% ________ in charity donations this month.”',
+        options: ['IN-crease (Noun — 1st syllable)', 'in-CREASE (Verb — 2nd syllable)'],
+        correct: 0,
+        explanation: 'After “a 20%...”, the word is a noun, so we stress the 1st syllable: IN-crease.'
+      },
+      {
+        id: 'nv3',
+        sentence: '3. “Please ________ your pronunciation on H5P so the teacher can listen.”',
+        options: ['RE-cord (Noun — 1st syllable)', 're-CORD (Verb — 2nd syllable)'],
+        correct: 1,
+        explanation: '“Record” is an instruction/action (verb) here, so we stress the 2nd syllable: re-CORD.'
+      }
+    ];
+
+    // Task 1b: Suffixes -ic, -tion, -sion (Slide 15)
+    const suffixStressGroups = [
+      {
+        suffix: '-ic',
+        title: 'Words ending in -ic',
+        audio: 'untitled%20folder/task-1b-ic.mp3',
+        words: [
+          { full: 'fantastic', syllables: ['fan', 'tas', 'tic'], stressedIndex: 1 },
+          { full: 'organic', syllables: ['or', 'gan', 'ic'], stressedIndex: 1 },
+          { full: 'economic', syllables: ['e', 'co', 'nom', 'ic'], stressedIndex: 2 }
+        ]
+      },
+      {
+        suffix: '-tion',
+        title: 'Words ending in -tion',
+        audio: 'untitled%20folder/task-1b-tion.mp3',
+        words: [
+          { full: 'promotion', syllables: ['pro', 'mo', 'tion'], stressedIndex: 1 },
+          { full: 'information', syllables: ['in', 'for', 'ma', 'tion'], stressedIndex: 2 },
+          { full: 'solution', syllables: ['so', 'lu', 'tion'], stressedIndex: 1 }
+        ]
+      },
+      {
+        suffix: '-sion',
+        title: 'Words ending in -sion',
+        words: [
+          { full: 'decision', syllables: ['de', 'ci', 'sion'], stressedIndex: 1 },
+          { full: 'discussion', syllables: ['dis', 'cus', 'sion'], stressedIndex: 1 },
+          { full: 'persuasion', syllables: ['per', 'sua', 'sion'], stressedIndex: 1 }
+        ]
+      }
+    ];
+
+    // Task 1c: 9 Silent 'e' words (Slide 19)
+    const silentEWords = [
+      { word: 'arrange', markup: 'arr<span class="text-emerald-600 font-extrabold underline">a</span>ng<span class="text-slate-400">e</span>', vowelSound: 'Long A (/eɪ/)', tip: 'Silent e makes “a” say /eɪ/ and “g” soft (/dʒ/).' },
+      { word: 'contribute', markup: 'contrib<span class="text-emerald-600 font-extrabold underline">u</span>t<span class="text-slate-400">e</span>', vowelSound: 'Long U (/juː/)', tip: 'Silent e makes “u” say its letter name /juː/.' },
+      { word: 'engage', markup: 'eng<span class="text-emerald-600 font-extrabold underline">a</span>g<span class="text-slate-400">e</span>', vowelSound: 'Long A (/eɪ/)', tip: 'Silent e makes “a” say /eɪ/ and “g” soft (/dʒ/).' },
+        { word: 'inspire', markup: 'insp<span class="text-emerald-600 font-extrabold underline">i</span>r<span class="text-slate-400">e</span>', vowelSound: 'Long I (/aɪ/; final r varies by accent)', tip: 'The silent e signals the long-I sound /aɪ/; the final r is pronounced in some accents.' },
+      { word: 'invite', markup: 'inv<span class="text-emerald-600 font-extrabold underline">i</span>t<span class="text-slate-400">e</span>', vowelSound: 'Long I (/aɪ/)', tip: 'Silent e changes short /ɪ/ to long /aɪ/.' },
+      { word: 'promote', markup: 'prom<span class="text-emerald-600 font-extrabold underline">o</span>t<span class="text-slate-400">e</span>', vowelSound: 'Long O (/əʊ/)', tip: 'Silent e makes the second “o” long (/əʊ/).' },
+      { word: 'suppose', markup: 'supp<span class="text-emerald-600 font-extrabold underline">o</span>s<span class="text-slate-400">e</span>', vowelSound: 'Long O (/əʊ/)', tip: 'Silent e makes “o” say its letter name /əʊ/.' },
+      { word: 'update', markup: 'upd<span class="text-emerald-600 font-extrabold underline">a</span>t<span class="text-slate-400">e</span>', vowelSound: 'Long A (/eɪ/)', tip: 'Silent e makes “a” say its letter name /eɪ/.' },
+      { word: 'venue', markup: 'ven<span class="text-emerald-600 font-extrabold underline">u</span><span class="text-slate-400">e</span>', vowelSound: 'Long U (/juː/)', tip: 'Silent e makes “u” say /juː/ (VEN-yoo).' }
+    ];
+
+    // Task 2a: Prefixes (Slides 30-31)
+    const prefixData = [
+      { prefix: 're-', correctMeaning: 'to do again', examples: 'recycle, reuse' },
+      { prefix: 'eco-', correctMeaning: 'connected with the environment', examples: 'eco-friendly, eco-conscious' },
+      { prefix: 'anti-', correctMeaning: 'against / opposed to', examples: 'anti-pollution, anti-discrimination' },
+      { prefix: 'co-', correctMeaning: 'together; with', examples: 'coexist, cooperate' },
+      { prefix: 'extra-', correctMeaning: 'outside or in addition to', examples: 'extraordinary, extravagant' },
+      { prefix: 'over-', correctMeaning: 'too much', examples: 'overuse, overcharge' },
+      { prefix: 'under-', correctMeaning: 'not enough; below', examples: 'underpaid, underprivileged' }
+    ];
+
+    const allPrefixMeanings = [
+      'to do again',
+      'connected with the environment',
+      'against / opposed to',
+      'together; with',
+      'outside or in addition to',
+      'too much',
+      'not enough'
+    ];
+
+    // Task 2a: Suffixes (Slides 33-34)
+    const suffixData = [
+      { suffix: '-able', pos: 'adjective', examples: 'biodegradable, recyclable', modelAnswer: 'reliable' },
+      { suffix: '-al', pos: 'adjective', examples: 'environmental, operational', modelAnswer: 'natural' },
+      { suffix: '-ful', pos: 'adjective', examples: 'resourceful, helpful', modelAnswer: 'useful' },
+      { suffix: '-less', pos: 'adjective', examples: 'paperless, careless', modelAnswer: 'useless' },
+      { suffix: '-ous', pos: 'adjective', examples: 'dangerous, famous', modelAnswer: 'generous' },
+      { suffix: '-ise', pos: 'verb', examples: 'digitalise, minimise', modelAnswer: 'organise' },
+      { suffix: '-ment', pos: 'noun', examples: 'commitment, environment', modelAnswer: 'arrangement' },
+      { suffix: '-tion', pos: 'noun', examples: 'certification, pollution', modelAnswer: 'situation' },
+      { suffix: '-ty', pos: 'noun', examples: 'quality, community', modelAnswer: 'loyalty' }
+    ];
+
+    // Slide 35 Prefix/Suffix Quiz
+    const affixQuizData = [
+      { word: 'sustainable', answer: '-able', isExample: true },
+      { word: 'protection', answer: '-tion', isExample: false },
+      { word: 'rebuild', answer: 're-', isExample: false },
+      { word: 'ecosystem', answer: 'eco-', isExample: false },
+      { word: 'development', answer: '-ment', isExample: false },
+      { word: 'maximise', answer: '-ise', isExample: false },
+      { word: 'annual', answer: '-al', isExample: false },
+      { word: 'extracurricular', answer: 'extra-', isExample: false },
+      { word: 'fruitful', answer: '-ful', isExample: false },
+      { word: 'timeless', answer: '-less', isExample: false },
+      { word: 'underestimate', answer: 'under-', isExample: false }
+    ];
+
+    // Task 2b: Syllable Counting & Colour Revealer (Slides 39-40)
+    const syllableWordsData = [
+      { word: 'recycle', count: 3, parts: ['re', 'cy', 'cle'], isExample: true },
+      { word: 'environment', count: 4, parts: ['en', 'vi', 'ron', 'ment'], isExample: false },
+      { word: 'biodegradable', count: 6, parts: ['bi', 'o', 'de', 'gra', 'da', 'ble'], isExample: false },
+      { word: 'eco-friendly', count: 4, parts: ['e', 'co-', 'friend', 'ly'], isExample: false },
+      { word: 'certification', count: 5, parts: ['cer', 'ti', 'fi', 'ca', 'tion'], isExample: false },
+      { word: 'sustainability', count: 6, parts: ['sus', 'tai', 'na', 'bi', 'li', 'ty'], isExample: false }
+    ];
+
+    // Task 2c: Liveworksheets Sets (Slides 41-43)
+    const liveworksheetsSets = {
+      set1: [
+        { word: 'reduce', breakdown: 're • DUCE (2 syllables)', note: 'Prefix re- + root duce (silent e)' },
+        { word: 'recycle', breakdown: 're • CY • cle (3 syllables)', note: 'Prefix re- + y as vowel (/aɪ/)' },
+        { word: 'reusable', breakdown: 're • U • sa • ble (4 syllables)', note: 'Prefix re- + use + suffix -able' },
+        { word: 'eco-friendly', breakdown: 'e • co • FRIEND • ly (4 syllables)', note: 'Prefix eco- + friend + -ly' },
+        { word: 'eco-conscious', breakdown: 'e • co • CON • scious (4 syllables)', note: 'Compound: eco- + conscious' }
+      ],
+      set2: [
+        { word: 'biodegradable → biodegradability', speak: 'biodegradable. biodegradability.', breakdown: 'bi-o-de-GRA-da-ble (6) → bi-o-de-gra-da-BI-li-ty (8)', note: 'Adding -ity shifts stress to the syllable before -ity!' },
+        { word: 'charitable → charity', speak: 'charitable. charity.', breakdown: 'CHA-ri-ta-ble (4) → CHA-ri-ty (3)', note: 'Both stress the 1st syllable CHA-' },
+        { word: 'loyal → loyalty', speak: 'loyal. loyalty.', breakdown: 'LOY-al (2) → LOY-al-ty (3)', note: 'Adjective (-al) to Noun (-ty)' },
+        { word: 'prioritise → priority', speak: 'prioritise. priority.', breakdown: 'pri-O-ri-tise (4) → pri-O-ri-ty (4)', note: 'Verb (-ise) to Noun (-ty)' },
+        { word: 'responsible → responsibility', speak: 'responsible. responsibility.', breakdown: 're-SPON-si-ble (4) → re-spon-si-BI-li-ty (6)', note: 'Notice the stress shift from -SPON- to -BI-!' },
+        { word: 'sustainable → sustainability', speak: 'sustainable. sustainability.', breakdown: 'sus-TAI-na-ble (4) → sus-tai-na-BI-li-ty (6)', note: 'Stress shifts from -TAI- to -BI- before -ity!' }
+      ],
+      set3: [
+        { word: 'environmental → environment', speak: 'environmental. environment.', breakdown: 'en-vi-ron-MEN-tal (5) → en-VI-ron-ment (4)', note: 'Adjective (-al) vs Noun (-ment)' },
+        { word: 'operational → operation', speak: 'operational. operation.', breakdown: 'o-pe-RA-tio-nal (5) → o-pe-RA-tion (4)', note: 'Stress stays on -RA- before -tion' },
+        { word: 'commit → commitment', speak: 'commit. commitment.', breakdown: 'com-MIT (2) → com-MIT-ment (3)', note: 'Adding -ment keeps stress on -MIT-' },
+        { word: 'govern → government', speak: 'govern. government.', breakdown: 'GO-vern (2) → GO-vern-ment (3)', note: 'Adding -ment keeps stress on GO-' },
+        { word: 'manage → management', speak: 'manage. management.', breakdown: 'MA-nage (2) → MA-nage-ment (3)', note: 'Adding -ment keeps stress on MA-' },
+        { word: 'transparent → transparency', speak: 'transparent. transparency.', breakdown: 'trans-PA-rent (3) → trans-PA-ren-cy (4)', note: 'Adjective (-ent) to Noun (-cy)' }
+      ]
+    };
+
+    // Task 3a & 3b: Sentence Stress Sentences (Slides 7 & 20 — 100% matched to XML bolding)
+    const stressSentencesData = [
+      {
+        id: 's7a_1',
+        part: 'Task 3a',
+        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_1.mp3',
+        tokens: [
+          { text: '‘Well,', stressed: false },
+          { text: 'I', stressed: false },
+          { text: 'think', stressed: false },
+          { text: 'that’s', stressed: false },
+          { text: 'a', stressed: false },
+          { text: 'terrible', stressed: true },
+          { text: 'idea.’', stressed: true }
+        ],
+        speak: 'Well, I think that\'s a terrible idea.'
+      },
+      {
+        id: 's7a_2',
+        part: 'Task 3a',
+        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_2.mp3',
+        tokens: [
+          { text: '‘Thanks', stressed: true },
+          { text: 'for', stressed: false },
+          { text: 'your', stressed: false },
+          { text: 'suggestions,', stressed: true },
+          { text: 'Sarah.', stressed: true },
+          { text: 'Those', stressed: false },
+          { text: 'are', stressed: false },
+          { text: 'some', stressed: false },
+          { text: 'great', stressed: true },
+          { text: 'ideas.’', stressed: true }
+        ],
+        speak: 'Thanks for your suggestions, Sarah. Those are some great ideas.'
+      },
+      {
+        id: 's7a_3',
+        part: 'Task 3a',
+        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_3.mp3',
+        tokens: [
+          { text: '‘That’s', stressed: false },
+          { text: 'a', stressed: false },
+          { text: 'possibility,', stressed: true },
+          { text: 'but', stressed: false },
+          { text: 'customers', stressed: true },
+          { text: 'may', stressed: false },
+          { text: 'forget', stressed: true },
+          { text: 'to', stressed: false },
+          { text: 'come', stressed: true },
+          { text: 'and', stressed: false },
+          { text: 'try', stressed: true },
+          { text: 'the', stressed: false },
+          { text: 'new', stressed: true },
+          { text: 'burger', stressed: true },
+          { text: 'if', stressed: false },
+          { text: 'they', stressed: false },
+          { text: 'don’t', stressed: false },
+          { text: 'have', stressed: false },
+          { text: 'a', stressed: false },
+          { text: 'flyer', stressed: true },
+          { text: 'to', stressed: false },
+          { text: 'remind', stressed: true },
+          { text: 'them.’', stressed: false }
+        ],
+        speak: 'That\'s a possibility, but customers may forget to come and try the new burger if they don\'t have a flyer to remind them.'
+      },
+      {
+        id: 's7a_4',
+        part: 'Task 3a',
+        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_4.mp3',
+        tokens: [
+          { text: '‘Sorry,', stressed: true },
+          { text: 'I’m', stressed: false },
+          { text: 'not', stressed: true },
+          { text: 'sure', stressed: true },
+          { text: 'that', stressed: false },
+          { text: 'we’d', stressed: false },
+          { text: 'reach', stressed: true },
+          { text: 'many', stressed: true },
+          { text: 'of', stressed: false },
+          { text: 'our', stressed: false },
+          { text: 'customers', stressed: true },
+          { text: 'by', stressed: false },
+          { text: 'promoting', stressed: true },
+          { text: 'with', stressed: false },
+          { text: 'just', stressed: true },
+          { text: 'one', stressed: true },
+          { text: 'banner.’', stressed: true }
+        ],
+        speak: 'Sorry, I\'m not sure that we\'d reach many of our customers by promoting with just one banner.'
+      },
+      {
+        id: 's7b_1',
+        part: 'Task 3b',
+        tokens: [
+          { text: '‘We', stressed: false },
+          { text: 'could', stressed: false },
+          { text: 'create', stressed: true },
+          { text: 'some', stressed: false },
+          { text: 'promotional', stressed: true },
+          { text: 'posters', stressed: true },
+          { text: 'and', stressed: false },
+          { text: 'flyers', stressed: true },
+          { text: 'advertising', stressed: true },
+          { text: 'the', stressed: false },
+          { text: 'burger.’', stressed: true }
+        ],
+        speak: 'We could create some promotional posters and flyers advertising the burger.'
+      },
+      {
+        id: 's7b_2',
+        part: 'Task 3b',
+        tokens: [
+          { text: '‘Why', stressed: false },
+          { text: 'don’t', stressed: false },
+          { text: 'we', stressed: false },
+          { text: 'offer', stressed: true },
+          { text: 'a', stressed: false },
+          { text: '20%', stressed: true },
+          { text: 'discount?’', stressed: true }
+        ],
+        speak: 'Why don\'t we offer a twenty percent discount?'
+      },
+      {
+        id: 's7b_3',
+        part: 'Task 3b',
+        tokens: [
+          { text: '‘I', stressed: false },
+          { text: 'suggest', stressed: true },
+          { text: 'that', stressed: false },
+          { text: 'we', stressed: false },
+          { text: 'should', stressed: false },
+          { text: 'try', stressed: true },
+          { text: 'to', stressed: false },
+          { text: 'promote', stressed: true },
+          { text: 'the', stressed: false },
+          { text: 'new', stressed: true },
+          { text: 'burger', stressed: true },
+          { text: 'meal', stressed: true },
+          { text: 'in', stressed: false },
+          { text: 'local', stressed: true },
+          { text: 'newspapers', stressed: true },
+          { text: 'and', stressed: false },
+          { text: 'magazines.’', stressed: true }
+        ],
+        speak: 'I suggest that we should try to promote the new burger meal in local newspapers and magazines.'
+      }
+    ];
+
+    // Task 3c: Meaning shift words
+    const meaningShiftWords = [
+      { word: 'WE', meaning: 'Emphasizes WHO: “WE should promote the new burger online (not hire an outside agency to do it).”' },
+      { word: 'SHOULD', meaning: 'Emphasizes OBLIGATION / STRONG ADVICE: “We really MUST promote the new burger online (it’s a mistake not to!).”' },
+      { word: 'PROMOTE', meaning: 'Emphasizes the ACTION: “We should PROMOTE the new burger online (not just list it quietly on the menu).”' },
+      { word: 'NEW', meaning: 'Emphasizes WHICH burger: “We should promote the NEW burger online (not the old classic burger).”' },
+      { word: 'BURGER', meaning: 'Emphasizes the PRODUCT: “We should promote the new BURGER online (not the salads or drinks).”' },
+      { word: 'ONLINE', meaning: 'Emphasizes the CHANNEL: “We should promote the new burger ONLINE (instead of printing expensive paper flyers).”' }
+    ];
+
+    // Task 4: Active Listening Quiz
+    const activeListeningQuestions = [
+      {
+        id: 'al1',
+        quote: '1. Colleague: “You bring up a good point about printing costs.”',
+        options: ['Acknowledging the suggestion', 'Seeking clarification', 'Seeking additional information', 'Providing feedback on suggestions'],
+        correct: 0
+      },
+      {
+        id: 'al2',
+        quote: '2. Colleague: “So, if I understand correctly, you mean we should only advertise on Instagram, don’t you?”',
+        options: ['Acknowledging the suggestion', 'Seeking clarification', 'Seeking additional information', 'Providing feedback on suggestions'],
+        correct: 1
+      },
+      {
+        id: 'al3',
+        quote: '3. Colleague: “That might work, but have you considered offering a student discount too?”',
+        options: ['Acknowledging the suggestion', 'Seeking clarification', 'Seeking additional information', 'Providing feedback on suggestions'],
+        correct: 3
+      },
+      {
+        id: 'al4',
+        quote: '4. Colleague: “Could I ask you a little more about that? I’d be interested in knowing more about that.”',
+        options: ['Acknowledging the suggestion', 'Seeking clarification', 'Seeking additional information', 'Providing feedback on suggestions'],
+        correct: 2
+      }
+    ];
+
+    // Task 5b: Meeting Clips (Slide 8 and Unit 8 Slide 43 videos)
+    const meetingClipsData = [
+      {
+        id: 'clip1',
+        title: 'Meeting Clip 1',
+        video: 'untitled%20folder/task-5b-clip-1.mp4',
+        speaker1: '“We’re planning to launch a new initiative called ‘Donate a Dollar Day’ to boost our fundraising efforts.”',
+        speaker2: '“Could you please clarify what you mean by ‘Donate a Dollar Day’? Can you give an example of how this would work?”',
+        highlightedPhrase: 'Could you please clarify what you mean by ‘Donate a Dollar Day’?',
+        keyPhrase: 'Could you please clarify what you mean by “Donate a Dollar Day”? Can you give an example of how this would work?',
+        options: ['Interrupting politely', 'Asking for clarification', 'Asking for contributions'],
+        correct: 1
+      },
+      {
+        id: 'clip2',
+        title: 'Meeting Clip 2',
+        video: 'untitled%20folder/task-5b-clip-2.mp4',
+        speaker1: '“We’ve been discussing potential strategies for our upcoming fundraising event.”',
+        speaker2: '“I’d like to hear your thoughts on this, Taylor.”',
+        highlightedPhrase: 'I’d like to hear your thoughts on this',
+        keyPhrase: 'I’d like to hear your thoughts on this, Taylor.',
+        options: ['Interrupting politely', 'Asking for clarification', 'Asking for contributions'],
+        correct: 2
+      },
+      {
+        id: 'clip3',
+        title: 'Meeting Clip 3',
+        video: 'untitled%20folder/task-5b-clip-3.mp4',
+        speaker1: '“As we continue our outreach, we have been focusing primarily on social media campaigns. We’ve promoted our charity on YouTube and Instagram.”',
+        speaker2: '“Excuse me, could I add something here? I think we’ve also promoted on our own homepage.”',
+        highlightedPhrase: 'Excuse me, could I add something here?',
+        keyPhrase: 'Excuse me, could I add something here?',
+        options: ['Interrupting politely', 'Asking for clarification', 'Asking for contributions'],
+        correct: 0
+      }
+    ];
+
+    // Task 6: Checking Understanding Quiz (Slide 45)
+    const understandingQuizData = [
+      {
+        id: 'cu1',
+        expression: 'Let’s wrap it up.',
+        isCorrect: false,
+        explanation: 'Used for ending/concluding a meeting, NOT checking understanding.'
+      },
+      {
+        id: 'cu2',
+        expression: 'Are you with me so far?',
+        isCorrect: true,
+        explanation: 'Correct! Used by a speaker to check if others understand their point.'
+      },
+      {
+        id: 'cu3',
+        expression: 'Could you talk me through that again?',
+        isCorrect: true,
+        explanation: 'Correct! Used by a listener to check understanding and ask for a clearer explanation.'
+      },
+      {
+        id: 'cu4',
+        expression: 'Excuse me, may I add something?',
+        isCorrect: false,
+        explanation: 'Used for polite interruption, NOT checking understanding.'
+      },
+      {
+        id: 'cu5',
+        expression: 'Could you give an example to illustrate that point?',
+        isCorrect: true,
+        explanation: 'Correct! Used to seek clarification and check that you understand the speaker’s point accurately.'
+      }
+    ];
+
+    
+    // Post-Watching Interactive Tasks for All 8 YouTube Videos
+    const videoPostWatchQuizzes = {
+      v1: {
+        title: '📝 Post-Watching Task: Word Stress (True/False & MC)',
+        questions: [
+          {
+            id: 'v1_q1',
+            type: 'TF',
+            prompt: '1. [True / False] The number of syllables in a word always matches the number of letters (for example, “scratched” has more syllables than “idea”).',
+            options: ['True', 'False'],
+            correct: 1,
+            explanation: 'False! “Scratched” has 9 letters but only 1 syllable, while “i-de-a” has 4 letters and 3 syllables.'
+          },
+          {
+            id: 'v1_q2',
+            type: 'MC',
+            prompt: '2. [MC] According to the video, how should you pronounce a stressed syllable?',
+            options: ['Faster, quieter, and lower', 'More prominent, often longer or louder, with a pitch change', 'With a pause before every letter'],
+            correct: 1,
+            explanation: 'A stressed syllable is more prominent. It may be longer or louder, and its pitch or vowel quality may change.'
+          },
+          {
+            id: 'v1_q3',
+            type: 'MC',
+            prompt: '3. [MC] If you write information for websites, how should you stress “content” in “content creator”?',
+            options: ['CON-tent creator (1st syllable — noun)', 'con-TENT creator (2nd syllable — adjective meaning “happy”)'],
+            correct: 0,
+            explanation: 'Stressing the 1st syllable (CON-tent) means the noun (information/media); stressing the 2nd syllable (con-TENT) means happy!'
+          }
+        ]
+      },
+      v2: {
+        title: '📝 Post-Watching Task: Syllables & Word Stress Rules (MC)',
+        questions: [
+          {
+            id: 'v2_q1',
+            type: 'MC',
+            prompt: '1. [MC] Where is the word stress in most two-syllable nouns (picture, minute) and adjectives (happy, useful)?',
+            options: ['On the 1st syllable (● ○)', 'On the 2nd syllable (○ ●)', 'Equally on both syllables'],
+            correct: 0,
+            explanation: 'Most two-syllable nouns and adjectives stress the 1st syllable (PIC-ture, USE-ful), while most two-syllable verbs stress the 2nd (de-CIDE, ex-PLAIN).'
+          },
+          {
+            id: 'v2_q2',
+            type: 'MC',
+            prompt: '2. [MC] What happens to the unstressed vowel sounds in words like “ba-NA-na” and “in-for-MA-tion”?',
+            options: ['They are pronounced extra loudly', 'They often reduce to a short, weak schwa sound (/ə/)', 'They become silent letters'],
+            correct: 1,
+            explanation: 'Contrast is key: unstressed vowels are quieter, shorter, and often reduce to the schwa sound /ə/.'
+          },
+          {
+            id: 'v2_q3',
+            type: 'MC',
+            prompt: '3. [MC] In many words ending with -tion, -sion, or -ic (information, discussion, economic), which syllable is stressed?',
+            options: ['Always the 1st syllable', 'The very last syllable', 'The second-to-last syllable (right before the suffix)'],
+            correct: 2,
+            explanation: 'A common pattern is to stress the syllable immediately before these endings (in-for-MA-tion, e-co-NOM-ic).'
+          }
+        ]
+      },
+      v3: {
+        title: '📝 Post-Watching Task: The Silent ‘E’ Rules (T/F & Matching)',
+        questions: [
+          {
+            id: 'v3_q1',
+            type: 'MC',
+            prompt: '1. [MC] Comparing “My mat is cut” vs. “My mate is cute”, what does the silent ‘e’ do to the vowel before the consonant?',
+            options: ['It makes the vowel short and quiet', 'It makes the vowel long so it says its alphabet name (A, E, I, O, U)', 'It deletes the vowel sound'],
+            correct: 1,
+            explanation: 'In common vowel-consonant-e patterns, the final silent ‘e’ often signals a long vowel (mat → mate, cut → cute, hop → hope). English has exceptions.'
+          },
+          {
+            id: 'v3_q2',
+            type: 'TF',
+            prompt: '2. [True / False] A silent ‘e’ also changes hard “c” (/k/) and hard “g” (/g/) into soft sounds (as in “lace”, “mice”, and “stage”).',
+            options: ['True', 'False'],
+            correct: 0,
+            explanation: 'True! That is why meeting words like “arrange” and “engage” have a soft /dʒ/ sound at the end.'
+          },
+          {
+            id: 'v3_q3',
+            type: 'MC',
+            prompt: '3. [Match] Match the word pair from the video: “breath” (noun) vs. “breathe” (verb with silent ‘e’):',
+            options: ['Both words sound identical', '“breath” has a short vowel /e/ and unvoiced /θ/, while “breathe” has /iː/ and voiced /ð/', '“breathe” has two syllables'],
+            correct: 1,
+            explanation: 'Adding silent ‘e’ in “breathe” lengthens the vowel to /iː/ and makes the final “th” voiced (/ð/).'
+          }
+        ]
+      },
+      v4: {
+        title: '📝 Post-Watching Task: Shifting Stress in Word Families (Matching)',
+        questions: [
+          {
+            id: 'v4_q1',
+            type: 'MC',
+            prompt: '1. [Match Stress Shift] In “E-qual” (2 syllables), the 1st syllable is stressed. Where does the stress move in “e-QUAL-i-ty” (4 syllables) and “e-qual-i-ZA-tion” (5 syllables)?',
+            options: ['It stays on the 1st syllable (E-)', 'It shifts right to the syllable before the suffix (-QUAL- and -ZA-)', 'It moves to the last syllable (-TY and -TION)'],
+            correct: 1,
+            explanation: 'As suffixes like -ity and -tion are added, the stressed syllable shifts right (e-QUAL-i-ty, e-qual-i-ZA-tion).'
+          },
+          {
+            id: 'v4_q2',
+            type: 'MC',
+            prompt: '2. [Match Stress Shift] “HIS-to-ry” stresses the 1st syllable. Which syllable is stressed in “his-TOR-i-cal” and “his-TOR-i-an”?',
+            options: ['1st syllable (HIS-)', '2nd syllable (-TOR-)', '4th syllable (-CAL / -AN)'],
+            correct: 1,
+            explanation: 'In “his-TOR-i-cal” and “his-TOR-i-an”, the stress shifts to the 2nd syllable (-TOR-).'
+          },
+          {
+            id: 'v4_q3',
+            type: 'MC',
+            prompt: '3. [Match Stress Shift] Compare “pre-SENT” (verb, 2nd syllable) and “pre-sen-TA-tion” (noun, 4 syllables). Which syllable carries the main stress in “presentation”?',
+            options: ['1st syllable (pre-)', '2nd syllable (-sen-)', '3rd syllable (-TA- before -tion)'],
+            correct: 2,
+            explanation: 'In “pre-sen-TA-tion”, the main stress shifts to the 3rd syllable (-TA-), right before the -tion suffix.'
+          }
+        ]
+      },
+      v5: {
+        title: '📝 Post-Watching Task: Stress-Timed Rhythm & Weak Forms (T/F & MC)',
+        questions: [
+          {
+            id: 'v5_q1',
+            type: 'TF',
+            prompt: '1. [True / False] English is a syllable-timed language where every syllable takes the same amount of time.',
+            options: ['True', 'False'],
+            correct: 1,
+            explanation: 'False. English is often described as stress-timed: prominent syllables tend to form the beat, while unstressed syllables are compressed between them.'
+          },
+          {
+            id: 'v5_q2',
+            type: 'MC',
+            prompt: '2. [MC] When counting “1, 2, 3, 4” vs. “1 and a 2 and a 3 and a 4”, why does the beat stay the same speed?',
+            options: ['Because the unstressed function words (“and a”) are spoken quickly between the stressed numbers', 'Because the numbers are skipped', 'Because every word is stressed equally'],
+            correct: 0,
+            explanation: 'In stress-timed English, unstressed function words are compressed between the main stressed content words.'
+          },
+          {
+            id: 'v5_q3',
+            type: 'MC',
+            prompt: '3. [Match Weak Form] In natural speech, how are function words like “can” (What can I do?), “of” (last of the crisps), and “a” (she’s a teacher) pronounced?',
+            options: ['As “weak forms” with a quick, unstressed schwa sound (/kən/, /əv/, /ə/)', 'With a long vowel and rising tone', 'With a pause after each word'],
+            correct: 0,
+            explanation: 'Function words often have shorter weak forms in connected speech. The reduced vowel depends on the word and context.'
+          }
+        ]
+      },
+      v6: {
+        title: '📝 Post-Watching Task: Active Listening Qualities (MC & T/F)',
+        questions: [
+          {
+            id: 'v6_q1',
+            type: 'MC',
+            prompt: '1. [MC] What are the two sides of non-verbal active listening (“listening with your eyes”) explained in the video?',
+            options: ['Looking at your phone while nodding occasionally', 'Showing engagement (eye contact, open posture) AND observing the speaker’s facial cues/mood', 'Writing emails while the other person talks'],
+            correct: 1,
+            explanation: 'Non-verbal active listening means both showing full attention (no devices, eye contact) and noticing the speaker’s visual cues.'
+          },
+          {
+            id: 'v6_q2',
+            type: 'MC',
+            prompt: '2. [MC] When a speaker finishes their talking turn, what should you do instead of giving a blank “stone face”?',
+            options: ['Give an informed reflective statement and ask a relevant follow-up question', 'Immediately change the topic', 'Wait in silence for someone else to speak'],
+            correct: 0,
+            explanation: 'Reflecting back what you heard and asking a follow-up question proves you were actively following along.'
+          },
+          {
+            id: 'v6_q3',
+            type: 'TF',
+            prompt: '3. [True / False] While a colleague is explaining a point, an active listener should avoid shifting the focus to their own story.',
+            options: ['True', 'False'],
+            correct: 0,
+            explanation: 'True! Keep the focus on the speaker first and let them fully share their thoughts.'
+          }
+        ]
+      },
+      v7: {
+        title: '📝 Post-Watching Task: Agreeing & Disagreeing in Meetings (Matching)',
+        questions: [
+          {
+            id: 'v7_q1',
+            type: 'MC',
+            prompt: '1. [Match Function] “Don’t get me wrong, Emir. I like them, but I don’t think they fit the brief.” What is Paul doing here?',
+            options: ['Disagreeing politely while softening the criticism', 'Ending the meeting', 'Asking Emir to repeat himself'],
+            correct: 0,
+            explanation: '“Don’t get me wrong, I like them, but…” is a polite way to soften disagreement in a workplace meeting.'
+          },
+          {
+            id: 'v7_q2',
+            type: 'MC',
+            prompt: '2. [Match Function] “OK, I see what you mean, but without all the colour, it would look a bit empty.” What strategy is Emir using?',
+            options: ['Acknowledging Paul’s point first before explaining his own concern', 'Agreeing 100% without any changes', 'Interrupting rudely'],
+            correct: 0,
+            explanation: '“I see what you mean, but…” acknowledges the other person’s view before offering constructive feedback.'
+          },
+          {
+            id: 'v7_q3',
+            type: 'MC',
+            prompt: '3. [Match Function] Which phrase from the video shows that a colleague has convinced you to consider their suggestion?',
+            options: ['“I’m not convinced by that idea.”', '“OK… maybe you’ve got a point there. Actually, that has given me an idea.”', '“I think I disagree.”'],
+            correct: 1,
+            explanation: '“Maybe you’ve got a point there” shows openness to the suggestion and can help the team move toward a compromise.'
+          }
+        ]
+      },
+      v8: {
+        title: '📝 Post-Watching Task: Online & Workplace Meeting Phrases (MC & Matching)',
+        questions: [
+          {
+            id: 'v8_q1',
+            type: 'MC',
+            prompt: '1. [MC] In an online meeting, what does the video recommend when you want to politely interrupt someone?',
+            options: ['Talk loudly over them until they stop', 'Use their first name and a polite phrase like “Kevin, can I jump in here for a second?”', 'Turn off your camera'],
+            correct: 1,
+            explanation: 'In online meetings, using a colleague’s first name plus “if I may” or “can I jump in here for a second?” gets their attention politely.'
+          },
+          {
+            id: 'v8_q2',
+            type: 'MC',
+            prompt: '2. [Match Scenario] If someone interrupts you before you finish your point, which phrase from the video politely holds your turn?',
+            options: ['“Just let me finish my point here—I’m not quite finished.”', '“My apologies for interrupting, go ahead.”', '“Sorry, I was on mute.”'],
+            correct: 0,
+            explanation: '“Just let me finish my point here” politely lets others know you need a moment to complete your thought.'
+          },
+          {
+            id: 'v8_q3',
+            type: 'MC',
+            prompt: '3. [Match Scenario] If a colleague’s audio is unclear or you missed their point, which expression checks understanding?',
+            options: ['“I’m going to share my screen now.”', '“I didn’t catch that—can you say that again?”', '“Sorry, I have a hard stop at 2 o’clock.”'],
+            correct: 1,
+            explanation: '“I didn’t catch that—can you say that again?” politely asks the speaker to repeat or clarify what they said.'
+          }
+        ]
+      }
+    };
+
+    function renderVideoQuizzes() {
+      Object.keys(videoPostWatchQuizzes).forEach(vKey => {
+        const container = document.getElementById(`vwQuiz_${vKey}`);
+        if (!container) return;
+        const quiz = videoPostWatchQuizzes[vKey];
+        container.innerHTML = `
+          <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h5 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
+                <span>${quiz.title}</span>
+              </h5>
+              <button type="button" onclick="revealSingleVideoQuiz('${vKey}')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition">
+                ✨ Show Answers
+              </button>
+            </div>
+            <div class="space-y-2.5">
+              ${quiz.questions.map((q, qIdx) => `
+                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                  <p class="text-xs font-semibold text-slate-800 mb-2">${q.prompt}</p>
+                  <div class="flex flex-wrap gap-1.5">
+                    ${q.options.map((opt, oIdx) => `
+                      <button type="button" onclick="checkVideoQuizAnswer('${vKey}', ${qIdx}, ${oIdx})" class="vw-opt-${q.id} px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-cyan-50 text-xs font-medium text-slate-700 text-left transition">
+                        ${opt}
+                      </button>
+                    `).join('')}
+                  </div>
+                  <p id="vwFeedback_${q.id}" class="hidden mt-1.5 text-xs font-semibold"></p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.checkVideoQuizAnswer = function(vKey, qIdx, oIdx) {
+      const q = videoPostWatchQuizzes[vKey].questions[qIdx];
+      const btns = document.querySelectorAll(`.vw-opt-${q.id}`);
+      const fb = document.getElementById(`vwFeedback_${q.id}`);
+      btns.forEach((b, i) => {
+        b.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'font-bold', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        if (i === oIdx) {
+          if (oIdx === q.correct) {
+            b.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'font-bold');
+          } else {
+            b.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+          }
+        }
+      });
+      fb.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+      if (oIdx === q.correct) {
+        fb.classList.add('text-emerald-700');
+        fb.textContent = '✅ ' + q.explanation;
+      } else {
+        fb.classList.add('text-rose-700');
+        fb.textContent = '❌ Not quite. ' + q.explanation;
+      }
+    };
+
+    window.revealSingleVideoQuiz = function(vKey) {
+      const quiz = videoPostWatchQuizzes[vKey];
+      if (!quiz) return;
+      quiz.questions.forEach((q, qIdx) => {
+        window.checkVideoQuizAnswer(vKey, qIdx, q.correct);
+      });
+    };
+
+    // ==========================================
+    // 2. STATE & SPEECH SYNTHESIS HELPERS
+    // ==========================================
+    let teacherMode = false;
+    let slideMode = false;
+    let currentSlideIndex = 0;
+    let activeTabId = 'tab-overview';
+    let currentLwSet = 'set1';
+    let stressSelectionState = {}; // { sentenceId: Set(tokenIndex) }
+    let practisedSilentE = new Set();
+    let timerInterval = null;
+    let timerSeconds = 180;
+
+    function showToast(msg, icon = '🔊') {
+      const box = document.getElementById('toastBox');
+      const txt = document.getElementById('toastText');
+      const icn = document.getElementById('toastIcon');
+      txt.textContent = msg;
+      icn.textContent = icon;
+      box.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 2800);
+    }
+
+    function speakText(text, rate = 0.95, pitch = 1.0) {
+      showToast('Speaking: "' + (text.length > 48 ? text.slice(0, 48) + '...' : text) + '"', '🔊');
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = 'en-GB';
+          utter.rate = rate;
+          utter.pitch = pitch;
+          window.speechSynthesis.speak(utter);
+        } catch (e) {
+          // Ignore synthesis errors in restricted environments
+        }
+      }
+    }
+
+    const suffixGroupRecording = new Audio();
+    function playSuffixGroup(gIdx) {
+      const group = suffixStressGroups[gIdx];
+      if (!group.audio) {
+        speakText(group.words.map(word => word.full).join('. '), 0.85);
+        return;
+      }
+      window.speechSynthesis?.cancel();
+      suffixGroupRecording.pause();
+      suffixGroupRecording.src = group.audio;
+      suffixGroupRecording.currentTime = 0;
+      showToast(`Playing ${group.title} recording...`, '🎧');
+      suffixGroupRecording.play().catch(() => {
+        showToast('Could not play this recording. Check that its MP3 is beside the HTML file.', '⚠️');
+      });
+    }
+
+    const silentERecording = new Audio('untitled%20folder/task-1c-silent-e.mp3');
+    function playSilentERecording() {
+      window.speechSynthesis?.cancel();
+      silentERecording.pause();
+      silentERecording.currentTime = 0;
+      showToast('Playing silent-e word recording...', '🎧');
+      silentERecording.play().catch(() => {
+        showToast('Could not play the recording. Check that its MP3 is beside the HTML file.', '⚠️');
+      });
+    }
+
+    const stressRecording = new Audio();
+    function playStressRecording(sentence) {
+      if (!sentence.audio) {
+        speakText(sentence.speak, 0.9);
+        return;
+      }
+      window.speechSynthesis?.cancel();
+      stressRecording.pause();
+      stressRecording.src = sentence.audio;
+      stressRecording.currentTime = 0;
+      showToast('Playing recording...', '🎧');
+      stressRecording.play().catch(() => {
+        showToast('Could not play recording. Check that the MP3 is beside this HTML file.', '⚠️');
+      });
+    }
+
+    function playDialogueClip(s1, s2) {
+      showToast('Playing two-speaker meeting clip...', '🎬');
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const u1 = new SpeechSynthesisUtterance(s1);
+          u1.lang = 'en-GB';
+          u1.rate = 0.95;
+          u1.pitch = 0.95;
+          const u2 = new SpeechSynthesisUtterance(s2);
+          u2.lang = 'en-US';
+          u2.rate = 0.95;
+          u2.pitch = 1.12;
+          window.speechSynthesis.speak(u1);
+          window.speechSynthesis.speak(u2);
+        } catch (e) {}
+      }
+    }
+
+    // ==========================================
+    // 3. RENDER FUNCTIONS FOR ALL TASKS
+    // ==========================================
+
+    // Render Task 1a Table & Quiz
+    function renderTask1() {
+      const tbody = document.getElementById('nounVerbTableBody');
+      tbody.innerHTML = nounVerbPairs.map(item => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-extrabold text-slate-900">${item.word}</td>
+          <td class="py-3 px-4">
+            <span class="font-bold text-sky-900">${item.nounDisplay}</span>
+            <span class="block text-xs font-normal text-sky-700">${item.nounPhonetic}</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-bold text-indigo-900">${item.verbDisplay}</span>
+            <span class="block text-xs font-normal text-indigo-700">${item.verbPhonetic}</span>
+          </td>
+          <td class="py-3 px-4 text-xs text-slate-600">
+            ${item.example}
+          </td>
+        </tr>
+      `).join('');
+
+      // Render Noun vs Verb Quiz
+      const nvContainer = document.getElementById('nvQuizContainer');
+      nvContainer.innerHTML = nvQuizQuestions.map((q, qIdx) => `
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200" id="nvCard_${q.id}">
+          <p class="text-xs sm:text-sm font-semibold text-slate-800 mb-2">${q.sentence}</p>
+          <div class="flex flex-wrap gap-2">
+            ${q.options.map((opt, oIdx) => `
+              <button type="button" onclick="checkNvAnswer('${q.id}', ${qIdx}, ${oIdx})" class="nv-opt-${q.id} px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-sky-50 text-xs font-semibold text-slate-700 transition">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <p id="nvFeedback_${q.id}" class="hidden mt-2 text-xs font-medium"></p>
+        </div>
+      `).join('');
+
+      // Render Suffix Stress Grid (-ic, -tion, -sion)
+      const sufGrid = document.getElementById('suffixStressGrid');
+      sufGrid.innerHTML = suffixStressGroups.map((grp, gIdx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <span class="font-extrabold text-sm text-cyan-900 px-2.5 py-1 rounded bg-cyan-100">${grp.title}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500">Click the stressed syllable</span>
+              <button type="button" onclick="playSuffixGroup(${gIdx})" class="px-2.5 py-1 rounded bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold">${grp.audio ? '🔊 Play Recording' : '🔊 Listen (TTS)'}</button>
+            </div>
+          </div>
+          <div class="space-y-3">
+            ${grp.words.map((w, wIdx) => `
+              <div class="p-3 rounded-lg bg-white border border-slate-200 flex items-center justify-between gap-2">
+                <div class="flex flex-wrap items-center gap-1" id="sufWord_${gIdx}_${wIdx}">
+                  ${w.syllables.map((syl, sIdx) => `
+                    <button type="button" onclick="clickSuffixSyllable(${gIdx}, ${wIdx}, ${sIdx})" class="suf-syl-${gIdx}-${wIdx} px-2.5 py-1 rounded border border-slate-300 bg-slate-50 hover:bg-cyan-50 text-xs sm:text-sm font-semibold transition">
+                      ${syl}
+                    </button>
+                  `).join('<span class="text-slate-300">·</span>')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Render Silent 'e' Practice Grid
+      const seGrid = document.getElementById('silentEGrid');
+      seGrid.innerHTML = silentEWords.map((item, idx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between" id="seCard_${idx}">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-extrabold text-slate-900">${item.markup}</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">${item.vowelSound}</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1.5">${item.tip}</p>
+          </div>
+          <div class="flex items-center gap-2 mt-3">
+            <button type="button" onclick="togglePractisedSilentE(${idx})" id="seBtn_${idx}" class="w-full py-1.5 px-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
+              ✅ Mark Practised
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.checkNvAnswer = function(qId, qIdx, oIdx) {
+      const q = nvQuizQuestions[qIdx];
+      const buttons = document.querySelectorAll(`.nv-opt-${qId}`);
+      const fb = document.getElementById(`nvFeedback_${qId}`);
+      buttons.forEach((b, idx) => {
+        b.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        if (idx === oIdx) {
+          if (oIdx === q.correct) {
+            b.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+          } else {
+            b.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+          }
+        }
+      });
+      fb.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+      if (oIdx === q.correct) {
+        fb.classList.add('text-emerald-700');
+        fb.textContent = '✅ Correct! ' + q.explanation;
+        speakText(q.options[oIdx].split(' ')[0]);
+      } else {
+        fb.classList.add('text-rose-700');
+        fb.textContent = '❌ Not quite. ' + q.explanation;
+      }
+    };
+
+    window.clickSuffixSyllable = function(gIdx, wIdx, sIdx) {
+      const w = suffixStressGroups[gIdx].words[wIdx];
+      const buttons = document.querySelectorAll(`.suf-syl-${gIdx}-${wIdx}`);
+      buttons.forEach((b, idx) => {
+        b.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600', 'bg-rose-100', 'text-rose-800', 'border-rose-400');
+        if (idx === sIdx) {
+          if (sIdx === w.stressedIndex) {
+            b.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+            speakText(w.full);
+          } else {
+            b.classList.add('bg-rose-100', 'text-rose-800', 'border-rose-400');
+            showToast('Remember: Stress falls on the syllable right BEFORE -ic, -tion, or -sion!', '💡');
+          }
+        }
+      });
+    };
+
+    window.togglePractisedSilentE = function(idx) {
+      const btn = document.getElementById(`seBtn_${idx}`);
+      practisedSilentE.add(idx);
+      btn.className = 'w-full py-1.5 px-2.5 rounded-lg bg-emerald-100 border border-emerald-400 text-emerald-900 text-xs font-bold transition';
+      btn.textContent = '✅ Practised!';
+    };
+
+    // Render Task 2 (Prefixes, Suffixes, Affix Quiz, Syllables, Liveworksheets Lab)
+    function renderTask2() {
+      // Prefixes Table
+      const pBody = document.getElementById('prefixTableBody');
+      pBody.innerHTML = prefixData.map((p, idx) => `
+        <tr>
+          <td class="py-3 px-4 font-extrabold text-purple-800 text-base">${p.prefix}</td>
+          <td class="py-3 px-4">
+            <select id="prefixSel_${idx}" class="w-full sm:w-auto px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="">-- Choose meaning --</option>
+              ${allPrefixMeanings.map(m => `<option value="${m}">${m}</option>`).join('')}
+            </select>
+            <span id="prefixBadge_${idx}" class="ml-2 text-xs font-bold hidden"></span>
+          </td>
+          <td class="py-3 px-4">
+            <button type="button" onclick="speakText('${p.examples}')" class="px-3 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-900 font-semibold text-xs sm:text-sm border border-purple-200 transition">
+              🔊 ${p.examples}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Suffixes Table
+      const sBody = document.getElementById('suffixTableBody');
+      sBody.innerHTML = suffixData.map((s, idx) => `
+        <tr>
+          <td class="py-2.5 px-4 font-extrabold text-purple-800">${s.suffix}</td>
+          <td class="py-2.5 px-4">
+            <span class="px-2 py-0.5 rounded text-xs font-bold uppercase ${s.pos === 'adjective' ? 'bg-sky-100 text-sky-800' : s.pos === 'verb' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${s.pos}</span>
+          </td>
+          <td class="py-2.5 px-4">
+            <button type="button" onclick="speakText('${s.examples}')" class="text-slate-800 hover:text-purple-700 font-medium text-xs sm:text-sm">
+              🔊 ${s.examples}
+            </button>
+          </td>
+          <td class="py-2.5 px-4">
+            <div class="flex items-center gap-2">
+              <input type="text" id="suffixInp_${idx}" placeholder="e.g. ${s.modelAnswer}" class="px-2.5 py-1 rounded border border-slate-300 text-xs sm:text-sm w-36 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+              <button type="button" onclick="revealSingleSuffixExample(${idx})" class="text-xs text-purple-700 hover:underline font-semibold">Idea</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Affix Identification Quiz (Slide 35)
+      const aGrid = document.getElementById('affixQuizGrid');
+      aGrid.innerHTML = affixQuizData.map((item, idx) => `
+        <div class="p-3 rounded-xl bg-white border border-purple-200 flex items-center justify-between gap-2">
+          <div>
+            <button type="button" onclick="speakText('${item.word}')" class="font-bold text-slate-800 text-xs sm:text-sm hover:text-purple-700">🔊 ${item.word}</button>
+            ${item.isExample ? '<span class="block text-[11px] text-purple-600 font-semibold">(Example)</span>' : ''}
+          </div>
+          <div class="flex items-center gap-1.5">
+            <input type="text" id="affixInp_${idx}" value="${item.isExample ? item.answer : ''}" placeholder="prefix / -suffix" class="w-24 px-2 py-1 rounded border border-slate-300 text-xs font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-500" />
+            <span id="affixIcon_${idx}" class="text-sm">${item.isExample ? '✅' : ''}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Syllable Counter & Colour Revealer (Slides 39-40)
+      const sylColors = ['bg-rose-100 text-rose-800 border-rose-300', 'bg-sky-100 text-sky-800 border-sky-300', 'bg-emerald-100 text-emerald-800 border-emerald-300', 'bg-amber-100 text-amber-800 border-amber-300', 'bg-purple-100 text-purple-800 border-purple-300', 'bg-cyan-100 text-cyan-800 border-cyan-300'];
+      const sylContainer = document.getElementById('syllableCardsContainer');
+      sylContainer.innerHTML = syllableWordsData.map((item, idx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-base font-extrabold text-slate-900">${item.word}</span>
+              <button type="button" onclick="speakText('${item.word}', 0.8)" class="px-2.5 py-1 rounded bg-indigo-100 text-indigo-800 text-xs font-bold hover:bg-indigo-200">🔊 Listen</button>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <label class="text-xs text-slate-600 font-medium">How many syllables?</label>
+              <input type="number" min="1" max="8" id="sylCountInp_${idx}" value="${item.isExample ? item.count : ''}" placeholder="?" class="w-14 px-2 py-1 rounded border border-slate-300 text-xs font-bold text-center" />
+              <span id="sylCountBadge_${idx}" class="text-xs font-bold ${item.isExample ? 'text-emerald-700' : 'hidden'}">${item.count} syllables</span>
+            </div>
+            <div id="sylColored_${idx}" class="${item.isExample ? '' : 'hidden'} py-2 px-2.5 rounded-lg bg-white border border-slate-200 text-center">
+              ${item.parts.map((p, pIdx) => `<span class="syl-pill border ${sylColors[pIdx % sylColors.length]} text-xs sm:text-sm">${p}</span>`).join('')}
+            </div>
+          </div>
+          <button type="button" onclick="revealSingleSyllableCard(${idx})" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition">
+            🎨 Reveal Syllables &amp; Check
+          </button>
+        </div>
+      `).join('');
+
+      renderLiveworksheetsLab(currentLwSet);
+    }
+
+    window.revealSingleSuffixExample = function(idx) {
+      const inp = document.getElementById(`suffixInp_${idx}`);
+      inp.value = suffixData[idx].modelAnswer;
+      inp.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-900', 'font-bold');
+      speakText(suffixData[idx].modelAnswer);
+    };
+
+    window.revealSingleSyllableCard = function(idx) {
+      const item = syllableWordsData[idx];
+      const inp = document.getElementById(`sylCountInp_${idx}`);
+      const badge = document.getElementById(`sylCountBadge_${idx}`);
+      const box = document.getElementById(`sylColored_${idx}`);
+      inp.value = item.count;
+      badge.classList.remove('hidden');
+      badge.textContent = `✅ ${item.count} syllables`;
+      badge.className = 'text-xs font-bold text-emerald-700';
+      box.classList.remove('hidden');
+      speakText(item.word, 0.75);
+    };
+
+    function renderLiveworksheetsLab(setKey) {
+      currentLwSet = setKey;
+      const items = liveworksheetsSets[setKey] || [];
+      const container = document.getElementById('lwLabContainer');
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          ${items.map((item, idx) => `
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-extrabold text-slate-900 text-sm sm:text-base">${item.word}</span>
+                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">${item.breakdown}</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">${item.note}</p>
+              </div>
+              <div class="flex items-center gap-2 mt-3">
+                <button type="button" onclick="speakText('${item.speak || item.word}', 0.85)" class="flex-1 py-1.5 px-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition">
+                  🔊 Listen Model
+                </button>
+                <button type="button" onclick="this.textContent='✅ Practised!'; this.className='flex-1 py-1.5 px-3 rounded-lg bg-emerald-100 border border-emerald-400 text-emerald-900 text-xs font-bold';" class="flex-1 py-1.5 px-3 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
+                  ✅ Mark Practised
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Render Task 3 (Sentence Stress Sentences & Meaning Shift)
+    function renderTask3() {
+      const container = document.getElementById('stressSentencesContainer');
+      container.innerHTML = stressSentencesData.map((sent) => {
+        if (!stressSelectionState[sent.id]) {
+          stressSelectionState[sent.id] = new Set();
+        }
+        return `
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+            ${sent.id === 's7b_1' ? `<div class="mb-4 rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-950">
+              <strong class="block mb-1">Task 3b • Practise sentence stress</strong>
+              In pairs, identify the stressed words in the sentences below by dragging and dropping the stress marker (<span class="stress-dot align-middle mx-1" aria-label="blue stress dot"></span>) over them. Then practise saying each sentence with the correct stress. Check your choices to highlight the stressed content words.
+            </div>` : ''}
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded bg-sky-100 text-sky-800">${sent.part}</span>
+              <div class="flex items-center gap-2">
+                ${sent.part === 'Task 3a' ? `<button type="button" onclick="playStressRecording(stressSentencesData.find(item => item.id === '${sent.id}'))" class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold transition">
+                  🔊 Play Recording
+                </button>` : `<span class="text-xs font-semibold text-sky-800">Drag this dot onto stressed words</span><span id="stressMarker_${sent.id}" class="stress-dot cursor-grab" role="img" aria-label="Draggable stress marker" draggable="true" ondragstart="beginStressMarkerDrag(event, '${sent.id}')" title="Drag onto a stressed word"></span>`}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-end leading-relaxed pt-2" id="sentRow_${sent.id}">
+              ${sent.tokens.map((tok, tIdx) => {
+                const isSelected = stressSelectionState[sent.id].has(tIdx);
+                return `
+                  <button type="button" onclick="toggleWordStress('${sent.id}', ${tIdx})" ${sent.part === 'Task 3b' ? `ondragover="allowStressMarkerDrop(event)" ondrop="dropStressMarker(event, '${sent.id}', ${tIdx})"` : ''} id="tok_${sent.id}_${tIdx}" class="word-token ${isSelected ? 'selected' : ''}">
+                    <span class="h-4 flex items-center justify-center mb-1">
+                      <span class="stress-dot ${isSelected ? '' : 'opacity-0'}"></span>
+                    </span>
+                    <span class="text-sm sm:text-base">${tok.text}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            <p id="sentFeedback_${sent.id}" class="hidden mt-2 text-xs font-semibold"></p>
+          </div>
+        `;
+      }).join('');
+
+      // Meaning shift buttons
+      const msContainer = document.getElementById('meaningShiftButtons');
+      msContainer.innerHTML = meaningShiftWords.map((item, idx) => `
+        <button type="button" onclick="selectMeaningShift(${idx})" class="ms-btn px-3.5 py-2 rounded-xl bg-white hover:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold text-sm transition shadow-sm">
+          ${item.word}
+        </button>
+      `).join('');
+    }
+
+    window.toggleWordStress = function(sentId, tIdx) {
+      if (!stressSelectionState[sentId]) {
+        stressSelectionState[sentId] = new Set();
+      }
+      if (stressSelectionState[sentId].has(tIdx)) {
+        stressSelectionState[sentId].delete(tIdx);
+      } else {
+        stressSelectionState[sentId].add(tIdx);
+      }
+      const btn = document.getElementById(`tok_${sentId}_${tIdx}`);
+      const dot = btn.querySelector('.stress-dot');
+      btn.classList.remove('correct', 'missed', 'wrong');
+      if (stressSelectionState[sentId].has(tIdx)) {
+        btn.classList.add('selected');
+        dot.classList.remove('opacity-0');
+      } else {
+        btn.classList.remove('selected');
+        dot.classList.add('opacity-0');
+      }
+    };
+
+    window.beginStressMarkerDrag = function(event, sentId) {
+      event.dataTransfer.setData('text/plain', sentId);
+      event.dataTransfer.effectAllowed = 'copy';
+    };
+
+    window.allowStressMarkerDrop = function(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    };
+
+    window.dropStressMarker = function(event, sentId, tIdx) {
+      event.preventDefault();
+      if (event.dataTransfer.getData('text/plain') !== sentId) return;
+      if (!stressSelectionState[sentId]?.has(tIdx)) toggleWordStress(sentId, tIdx);
+    };
+
+    window.selectMeaningShift = function(idx) {
+      const item = meaningShiftWords[idx];
+      const res = document.getElementById('meaningShiftResult');
+      const btns = document.querySelectorAll('.ms-btn');
+      btns.forEach((b, i) => {
+        if (i === idx) {
+          b.className = 'ms-btn px-3.5 py-2 rounded-xl bg-sky-600 text-white border-2 border-sky-700 font-extrabold text-sm transition shadow';
+        } else {
+          b.className = 'ms-btn px-3.5 py-2 rounded-xl bg-white hover:bg-sky-100 border-2 border-sky-300 text-slate-800 font-bold text-sm transition shadow-sm';
+        }
+      });
+      res.innerHTML = `<strong class="text-sky-800">Stressing “${item.word}”:</strong> ${item.meaning}`;
+    };
+
+
+    const alStrategyMatchItems = [
+      {
+        id: 'alm_1',
+        badge: 'Verbal Expressions A',
+        isVerbal: true,
+        lines: [
+          '• “So, if I understand correctly…”',
+          '• “You mean…, don’t you?”'
+        ],
+        speak: "So, if I understand correctly, you mean we should launch in May, don't you?",
+        correctStrategy: 'Seeking clarification'
+      },
+      {
+        id: 'alm_2',
+        badge: 'Non-Verbal Action B',
+        isVerbal: false,
+        lines: [
+          'Look at the speaker (or into the camera in online meetings) and put away phones or distractions to show full attention.',
+          '✔ Builds trust and connection'
+        ],
+        speak: 'Maintaining eye contact builds trust and connection in meetings.',
+        correctStrategy: 'Maintaining eye contact'
+      },
+      {
+        id: 'alm_3',
+        badge: 'Verbal Expressions C',
+        isVerbal: true,
+        lines: [
+          '• “I see what you’re saying about…”',
+          '• “You bring up a good point about…”'
+        ],
+        speak: "I see what you're saying about that. You bring up a good point about the budget.",
+        correctStrategy: 'Acknowledging the suggestion'
+      },
+      {
+        id: 'alm_4',
+        badge: 'Verbal Expressions D',
+        isVerbal: true,
+        lines: [
+          '• “That sounds like a practical suggestion.”',
+          '• “That might work, but have you considered…?”'
+        ],
+        speak: 'That sounds like a practical suggestion. That might work, but have you considered social media?',
+        correctStrategy: 'Providing feedback on suggestions'
+      },
+      {
+        id: 'alm_5',
+        badge: 'Non-Verbal Action E',
+        isVerbal: false,
+        lines: [
+          'Nodding, smiling, and using natural facial expressions to show the speaker that you are following their message.',
+          '✔ Encourages the speaker to continue'
+        ],
+        speak: 'Responding with facial expressions encourages the speaker to continue.',
+        correctStrategy: 'Responding with facial expressions'
+      },
+      {
+        id: 'alm_6',
+        badge: 'Verbal Expressions F',
+        isVerbal: true,
+        lines: [
+          '• “Could I ask you a little more about that?”',
+          '• “I’d be interested in knowing more about that.”'
+        ],
+        speak: "Could I ask you a little more about that? I'd be interested in knowing more about that.",
+        correctStrategy: 'Seeking additional information'
+      }
+    ];
+
+    const alAllStrategies = [
+      'Acknowledging the suggestion',
+      'Seeking clarification',
+      'Seeking additional information',
+      'Providing feedback on suggestions',
+      'Maintaining eye contact',
+      'Responding with facial expressions'
+    ];
+
+    // Render Task 4 (Active Listening)
+    function renderTask4() {
+      const matchGrid = document.getElementById('alStrategyMatchingGrid');
+      if (matchGrid) {
+        matchGrid.innerHTML = alStrategyMatchItems.map((item, idx) => `
+          <div class="p-4 rounded-xl border-2 border-slate-200 bg-white flex flex-col justify-between transition" id="almCard_${idx}">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold uppercase px-2 py-0.5 rounded ${item.isVerbal ? 'bg-teal-100 text-teal-800' : 'bg-amber-100 text-amber-900'}">${item.badge}</span>
+                <span id="almStatus_${idx}" class="text-xs font-extrabold hidden"></span>
+              </div>
+              <div class="space-y-1.5 text-xs sm:text-sm text-slate-700 my-2.5 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                ${item.lines.map(line => `<p class="${line.startsWith('✔') ? 'text-xs font-semibold text-amber-800 mt-1' : 'font-medium text-slate-800'}">${line}</p>`).join('')}
+              </div>
+            </div>
+            <div class="space-y-2.5 mt-2">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Match to Strategy / Cue:</label>
+                <select id="almSel_${idx}" onchange="checkSingleAlMatch(${idx})" class="w-full px-2.5 py-2 rounded-lg border border-slate-300 bg-white text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                  <option value="">-- Select strategy / cue --</option>
+                  ${alAllStrategies.map(st => `<option value="${st}">${st}</option>`).join('')}
+                </select>
+              </div>
+              <button type="button" onclick="speakText('${item.speak.replace(/'/g, "\\'")}')" class="w-full py-1.5 px-3 rounded-lg ${item.isVerbal ? 'bg-teal-600 hover:bg-teal-700 text-white' : 'bg-amber-100 hover:bg-amber-200 text-amber-900'} text-xs font-semibold transition">
+                🔊 ${item.isVerbal ? 'Listen & Practise' : 'Listen to Cue Summary'}
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const container = document.getElementById('activeListeningQuiz');
+      container.innerHTML = activeListeningQuestions.map((q, qIdx) => `
+        <div class="p-4 rounded-xl bg-white border border-slate-200">
+          <p class="text-xs sm:text-sm font-bold text-slate-800 mb-2.5">${q.quote}</p>
+          <div class="flex flex-wrap gap-2">
+            ${q.options.map((opt, oIdx) => `
+              <button type="button" onclick="checkAlQuiz('${q.id}', ${qIdx}, ${oIdx})" class="al-opt-${q.id} px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-teal-50 text-xs font-semibold text-slate-700 transition">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <p id="alFeedback_${q.id}" class="hidden mt-2 text-xs font-bold"></p>
+        </div>
+      `).join('');
+    }
+
+    window.checkAlQuiz = function(qId, qIdx, oIdx) {
+      const q = activeListeningQuestions[qIdx];
+      const btns = document.querySelectorAll(`.al-opt-${qId}`);
+      const fb = document.getElementById(`alFeedback_${qId}`);
+      btns.forEach((b, i) => {
+        b.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        if (i === oIdx) {
+          b.classList.add(oIdx === q.correct ? 'bg-emerald-100' : 'bg-rose-100', oIdx === q.correct ? 'border-emerald-500' : 'border-rose-500', oIdx === q.correct ? 'text-emerald-900' : 'text-rose-900');
+        }
+      });
+      fb.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+      if (oIdx === q.correct) {
+        fb.classList.add('text-emerald-700');
+        fb.textContent = '✅ Correct! That expression demonstrates "' + q.options[q.correct] + '".';
+      } else {
+        fb.classList.add('text-rose-700');
+        fb.textContent = '❌ Try again! Hint: Look at the 4 verbal categories above.';
+      }
+    };
+
+
+    window.checkSingleAlMatch = function(idx) {
+      const item = alStrategyMatchItems[idx];
+      const sel = document.getElementById(`almSel_${idx}`);
+      const card = document.getElementById(`almCard_${idx}`);
+      const status = document.getElementById(`almStatus_${idx}`);
+      if (!sel || !sel.value) {
+        status.classList.add('hidden');
+        card.className = 'p-4 rounded-xl border-2 border-slate-200 bg-white flex flex-col justify-between transition';
+        return;
+      }
+      status.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+      if (sel.value === item.correctStrategy) {
+        status.textContent = '✅ Correct!';
+        status.classList.add('text-emerald-700');
+        card.className = 'p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/30 flex flex-col justify-between transition';
+      } else {
+        status.textContent = '❌ Try again';
+        status.classList.add('text-rose-700');
+        card.className = 'p-4 rounded-xl border-2 border-rose-400 bg-rose-50/30 flex flex-col justify-between transition';
+      }
+    };
+
+    function checkAllAlMatches(reveal = false) {
+      alStrategyMatchItems.forEach((item, idx) => {
+        const sel = document.getElementById(`almSel_${idx}`);
+        if (reveal && sel) {
+          sel.value = item.correctStrategy;
+        }
+        window.checkSingleAlMatch(idx);
+        if (!reveal && sel && !sel.value) {
+          const status = document.getElementById(`almStatus_${idx}`);
+          const card = document.getElementById(`almCard_${idx}`);
+          status.classList.remove('hidden');
+          status.textContent = '⚠️ Select an answer';
+          status.className = 'text-xs font-extrabold text-amber-700';
+          card.className = 'p-4 rounded-xl border-2 border-amber-400 bg-amber-50/20 flex flex-col justify-between transition';
+        }
+      });
+    }
+
+    // Render Task 5 & 6 (Meeting Clips & Checking Understanding)
+    function renderTask5() {
+      const clipsContainer = document.getElementById('meetingClipsContainer');
+      clipsContainer.innerHTML = meetingClipsData.map((clip, cIdx) => `
+        <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="mb-3">
+              <span class="font-extrabold text-sm text-blue-900 px-2.5 py-1 rounded bg-blue-100">🎬 ${clip.title}</span>
+            </div>
+            <video class="w-full aspect-video rounded-lg bg-slate-900 mb-3" controls preload="metadata" playsinline aria-label="${clip.title} video">
+              <source src="${clip.video}" type="video/mp4">
+              Your browser does not support embedded video.
+            </video>
+            <div class="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200 text-xs sm:text-sm mb-4">
+              <p><strong class="text-slate-700">Speaker 1:</strong> ${clip.speaker1}</p>
+              <p><strong class="text-blue-700">Speaker 2:</strong> ${clip.speaker2.replace(clip.highlightedPhrase, `<mark class="rounded bg-amber-200 px-0.5">${clip.highlightedPhrase}</mark>`)}</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-700 mb-2">What interaction strategy does Speaker 2 demonstrate?</p>
+            <div class="space-y-1.5">
+              ${clip.options.map((opt, oIdx) => `
+                <button type="button" onclick="checkClipStrategy('${clip.id}', ${cIdx}, ${oIdx})" class="clip-opt-${clip.id} w-full text-left px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-blue-50 text-xs font-semibold text-slate-800 transition">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+            <p id="clipFeedback_${clip.id}" class="hidden mt-2 text-xs font-bold"></p>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Task 6 Checking Understanding Quiz
+      const cuList = document.getElementById('understandingQuizList');
+      cuList.innerHTML = understandingQuizData.map((item, idx) => `
+        <div class="p-3.5 rounded-xl bg-white border border-emerald-200 flex flex-wrap items-center justify-between gap-3" id="cuRow_${idx}">
+          <label class="flex items-center gap-3 cursor-pointer flex-1">
+            <input type="checkbox" id="cuCheck_${idx}" class="w-4 h-4 accent-emerald-600 rounded" />
+            <span class="font-bold text-slate-800 text-sm sm:text-base">“${item.expression}”</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="speakText('${item.expression.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">🔊 Say</button>
+            <span id="cuBadge_${idx}" class="hidden text-xs font-bold"></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.checkClipStrategy = function(clipId, cIdx, oIdx) {
+      const clip = meetingClipsData[cIdx];
+      const btns = document.querySelectorAll(`.clip-opt-${clipId}`);
+      const fb = document.getElementById(`clipFeedback_${clipId}`);
+      btns.forEach((b, i) => {
+        b.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        if (i === oIdx) {
+          b.classList.add(oIdx === clip.correct ? 'bg-emerald-100' : 'bg-rose-100', oIdx === clip.correct ? 'border-emerald-500' : 'border-rose-500', oIdx === clip.correct ? 'text-emerald-900' : 'text-rose-900');
+        }
+      });
+      fb.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+      if (oIdx === clip.correct) {
+        fb.classList.add('text-emerald-700');
+        fb.textContent = `✅ Correct! Key phrase: "${clip.keyPhrase}"`;
+      } else {
+        fb.classList.add('text-rose-700');
+        fb.textContent = '❌ Not quite. Look closely at what Speaker 2 asks or says!';
+      }
+    };
+
+    // ==========================================
+    // 4. INTERACTIVE CHECKERS & REVEAL ALL LOGIC
+    // ==========================================
+
+    function checkPrefixes() {
+      prefixData.forEach((p, idx) => {
+        const sel = document.getElementById(`prefixSel_${idx}`);
+        const badge = document.getElementById(`prefixBadge_${idx}`);
+        badge.classList.remove('hidden', 'text-emerald-700', 'text-rose-700');
+        if (sel.value === p.correctMeaning) {
+          badge.textContent = '✅ Correct!';
+          badge.classList.add('text-emerald-700');
+        } else {
+          badge.textContent = `❌ (${p.correctMeaning})`;
+          badge.classList.add('text-rose-700');
+        }
+      });
+    }
+
+    function checkAffixQuiz() {
+      affixQuizData.forEach((item, idx) => {
+        const inp = document.getElementById(`affixInp_${idx}`);
+        const icn = document.getElementById(`affixIcon_${idx}`);
+        const val = inp.value.trim().toLowerCase();
+        const ans = item.answer.toLowerCase();
+        if (val === ans || val === ans.replace('-', '')) {
+          inp.value = item.answer;
+          inp.className = 'w-24 px-2 py-1 rounded border border-emerald-500 bg-emerald-50 text-emerald-900 text-xs font-bold text-center';
+          icn.textContent = '✅';
+        } else {
+          inp.className = 'w-24 px-2 py-1 rounded border border-rose-500 bg-rose-50 text-rose-900 text-xs font-bold text-center';
+          icn.textContent = '❌';
+        }
+      });
+    }
+
+    function checkStressSentences(revealKey = false) {
+      stressSentencesData.forEach(sent => {
+        const selected = stressSelectionState[sent.id] || new Set();
+        let correctCount = 0;
+        let totalStressed = 0;
+        sent.tokens.forEach((tok, tIdx) => {
+          const btn = document.getElementById(`tok_${sent.id}_${tIdx}`);
+          const dot = btn.querySelector('.stress-dot');
+          btn.classList.remove('selected', 'correct', 'missed', 'wrong');
+          if (tok.stressed) totalStressed++;
+
+          if (revealKey) {
+            if (tok.stressed) {
+              stressSelectionState[sent.id].add(tIdx);
+              btn.classList.add('correct');
+              dot.classList.remove('opacity-0');
+              correctCount++;
+            } else {
+              stressSelectionState[sent.id].delete(tIdx);
+              dot.classList.add('opacity-0');
+            }
+          } else {
+            const isSel = selected.has(tIdx);
+            if (isSel && tok.stressed) {
+              btn.classList.add('correct');
+              dot.classList.remove('opacity-0');
+              correctCount++;
+            } else if (!isSel && tok.stressed) {
+              btn.classList.add('missed');
+              dot.classList.remove('opacity-0');
+            } else if (isSel && !tok.stressed) {
+              btn.classList.add('wrong');
+              dot.classList.add('opacity-0');
+            } else {
+              dot.classList.add('opacity-0');
+            }
+          }
+        });
+        const fb = document.getElementById(`sentFeedback_${sent.id}`);
+        fb.classList.remove('hidden');
+        if (revealKey) {
+          fb.className = 'mt-2 text-xs font-semibold text-emerald-700';
+          fb.textContent = `✨ Answer Key Revealed: ${totalStressed} stressed content words highlighted in green.`;
+        } else {
+          fb.className = 'mt-2 text-xs font-semibold text-slate-700';
+          const scoreText = `Score: ${correctCount} / ${totalStressed} content words matched.`;
+          if (sent.part === 'Task 3b') {
+            const answerWords = sent.tokens
+              .filter(tok => tok.stressed)
+              .map(tok => tok.text.replace(/[‘’]/g, ''))
+              .join(', ');
+            fb.textContent = `${scoreText} Correct stressed words: ${answerWords}.`;
+          } else {
+            fb.textContent = `${scoreText} Green = Correct, Yellow = Missed content word, Red = Unstressed function word.`;
+          }
+        }
+      });
+    }
+
+    function checkUnderstandingQuiz(revealKey = false) {
+      understandingQuizData.forEach((item, idx) => {
+        const chk = document.getElementById(`cuCheck_${idx}`);
+        const badge = document.getElementById(`cuBadge_${idx}`);
+        const row = document.getElementById(`cuRow_${idx}`);
+        if (revealKey) {
+          chk.checked = item.isCorrect;
+        }
+        badge.classList.remove('hidden', 'text-emerald-700', 'text-rose-700', 'text-slate-600');
+        row.classList.remove('bg-emerald-50', 'bg-rose-50');
+        if (chk.checked === item.isCorrect) {
+          badge.classList.add(item.isCorrect ? 'text-emerald-700' : 'text-slate-600');
+          badge.textContent = (item.isCorrect ? '✅ Yes! ' : '✔ Correctly left unchecked: ') + item.explanation;
+          if (item.isCorrect) row.classList.add('bg-emerald-50');
+        } else {
+          badge.classList.add('text-rose-700');
+          badge.textContent = '❌ ' + item.explanation;
+          row.classList.add('bg-rose-50');
+        }
+      });
+    }
+
+    // Reveal All Answers for Active Tab
+    function revealActiveTabAnswers() {
+      if (activeTabId === 'tab-overview') {
+        document.querySelectorAll('.obj-check').forEach(c => { c.checked = true; });
+        showToast('All Learning Objectives checked!', '✨');
+      } else if (activeTabId === 'tab-task1') {
+        nvQuizQuestions.forEach((q, qIdx) => window.checkNvAnswer(q.id, qIdx, q.correct));
+        suffixStressGroups.forEach((grp, gIdx) => {
+          grp.words.forEach((w, wIdx) => window.clickSuffixSyllable(gIdx, wIdx, w.stressedIndex));
+        });
+        ['v1', 'v2', 'v3'].forEach(k => window.revealSingleVideoQuiz(k));
+        showToast('All Task 1 stress & video answers revealed!', '✨');
+      } else if (activeTabId === 'tab-task2') {
+        prefixData.forEach((p, idx) => {
+          document.getElementById(`prefixSel_${idx}`).value = p.correctMeaning;
+        });
+        checkPrefixes();
+        suffixData.forEach((_, idx) => window.revealSingleSuffixExample(idx));
+        affixQuizData.forEach((item, idx) => {
+          document.getElementById(`affixInp_${idx}`).value = item.answer;
+        });
+        checkAffixQuiz();
+        syllableWordsData.forEach((_, idx) => window.revealSingleSyllableCard(idx));
+        window.revealSingleVideoQuiz('v4');
+        showToast('All Task 2 prefixes, suffixes, syllables & video answers revealed!', '✨');
+      } else if (activeTabId === 'tab-task3') {
+        checkStressSentences(true);
+        window.selectMeaningShift(2);
+        window.revealSingleVideoQuiz('v5');
+        showToast('All Task 3 sentence stress & video answers revealed!', '✨');
+      } else if (activeTabId === 'tab-task4') {
+        checkAllAlMatches(true);
+        activeListeningQuestions.forEach((q, qIdx) => window.checkAlQuiz(q.id, qIdx, q.correct));
+        ['v6', 'v7'].forEach(k => window.revealSingleVideoQuiz(k));
+        showToast('All Task 4 active listening & video answers revealed!', '✨');
+      } else if (activeTabId === 'tab-task5') {
+        meetingClipsData.forEach((c, cIdx) => window.checkClipStrategy(c.id, cIdx, c.correct));
+        checkUnderstandingQuiz(true);
+        window.revealSingleVideoQuiz('v8');
+        showToast('All Task 5 & 6 meeting interaction & video answers revealed!', '✨');
+      }
+    }
+
+    // Reset Active Tab
+    function resetActiveTab() {
+      if (activeTabId === 'tab-overview') {
+        document.querySelectorAll('.obj-check').forEach(c => { c.checked = false; });
+      } else if (activeTabId === 'tab-task1') {
+        renderTask1();
+      } else if (activeTabId === 'tab-task2') {
+        renderTask2();
+      } else if (activeTabId === 'tab-task3') {
+        stressSelectionState = {};
+        renderTask3();
+      } else if (activeTabId === 'tab-task4') {
+        renderTask4();
+      } else if (activeTabId === 'tab-task5') {
+        renderTask5();
+      renderVideoQuizzes();
+      }
+      renderVideoQuizzes();
+      showToast('Current tab reset for fresh classroom practice!', '↺');
+    }
+
+    // ==========================================
+    // 5. TAB & SLIDE-BY-SLIDE PRESENTATION MODE
+    // ==========================================
+    function switchTab(tabId) {
+      activeTabId = tabId;
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('hidden', panel.id !== tabId);
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isCurrent = btn.getAttribute('data-tab') === tabId;
+        btn.className = isCurrent
+          ? 'tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 bg-cyan-600 text-white shadow'
+          : 'tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60';
+      });
+      if (slideMode) {
+        // Set slide index to first card in this tab
+        const allCards = Array.from(document.querySelectorAll('.deck-card'));
+        const firstCardInTab = document.querySelector(`#${tabId} .deck-card`);
+        const idx = allCards.indexOf(firstCardInTab);
+        if (idx !== -1) {
+          currentSlideIndex = idx;
+          updateSlidePresentationView();
+        }
+      }
+    }
+
+    function updateSlidePresentationView() {
+      const allCards = Array.from(document.querySelectorAll('.deck-card'));
+      const banner = document.getElementById('slideNavBanner');
+      if (!slideMode) {
+        banner.classList.add('hidden');
+        allCards.forEach(c => c.classList.remove('hidden'));
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.classList.toggle('hidden', panel.id !== activeTabId);
+        });
+        return;
+      }
+
+      banner.classList.remove('hidden');
+      if (currentSlideIndex < 0) currentSlideIndex = 0;
+      if (currentSlideIndex >= allCards.length) currentSlideIndex = allCards.length - 1;
+
+      const targetCard = allCards[currentSlideIndex];
+      const parentSection = targetCard.closest('.tab-panel');
+      if (parentSection && parentSection.id !== activeTabId) {
+        activeTabId = parentSection.id;
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.classList.toggle('hidden', panel.id !== activeTabId);
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          const isCurrent = btn.getAttribute('data-tab') === activeTabId;
+          btn.className = isCurrent
+            ? 'tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 bg-cyan-600 text-white shadow'
+            : 'tab-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 text-slate-300 hover:bg-slate-700/60';
+        });
+      }
+
+      allCards.forEach((c, idx) => {
+        c.classList.toggle('hidden', idx !== currentSlideIndex);
+      });
+
+      document.getElementById('slideCounterBadge').textContent = `Card ${currentSlideIndex + 1} / ${allCards.length}`;
+      document.getElementById('slideTitleBadge').textContent = targetCard.getAttribute('data-slide-title') || '';
+    }
+
+    // ==========================================
+    // 6. INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTask1();
+      renderTask2();
+      renderTask3();
+      renderTask4();
+      renderTask5();
+      renderVideoQuizzes();
+
+      // Main Tab Clicks
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.getAttribute('data-tab'));
+        });
+      });
+
+      // Liveworksheets Sub-tabs
+      document.querySelectorAll('.lw-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const setKey = btn.getAttribute('data-lw');
+          document.querySelectorAll('.lw-tab-btn').forEach(b => {
+            b.className = b === btn
+              ? 'lw-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white'
+              : 'lw-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200';
+          });
+          renderLiveworksheetsLab(setKey);
+        });
+      });
+
+      // Teacher Mode Toggle
+      document.getElementById('btnTeacherMode').addEventListener('click', () => {
+        teacherMode = !teacherMode;
+        document.getElementById('teacherModeText').textContent = `Teacher Mode: ${teacherMode ? 'ON' : 'OFF'}`;
+        document.querySelectorAll('.teacher-note').forEach(n => {
+          n.classList.toggle('hidden', !teacherMode);
+        });
+        showToast(teacherMode ? 'Teacher Mode ON: Classroom teaching notes visible.' : 'Teacher Mode OFF: Student view active.', '🎓');
+      });
+
+      // Slide Mode Toggle
+      document.getElementById('btnViewMode').addEventListener('click', () => {
+        slideMode = !slideMode;
+        document.getElementById('viewModeText').textContent = `Slide-by-Slide Mode: ${slideMode ? 'ON' : 'OFF'}`;
+        updateSlidePresentationView();
+      });
+
+      document.getElementById('btnPrevSlide').addEventListener('click', () => {
+        if (currentSlideIndex > 0) {
+          currentSlideIndex--;
+          updateSlidePresentationView();
+        }
+      });
+
+      document.getElementById('btnNextSlide').addEventListener('click', () => {
+        const total = document.querySelectorAll('.deck-card').length;
+        if (currentSlideIndex < total - 1) {
+          currentSlideIndex++;
+          updateSlidePresentationView();
+        }
+      });
+
+      // Keyboard navigation for Slide-by-Slide mode
+      window.addEventListener('keydown', (e) => {
+        if (!slideMode) return;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+        if (e.key === 'ArrowRight') {
+          document.getElementById('btnNextSlide').click();
+        } else if (e.key === 'ArrowLeft') {
+          document.getElementById('btnPrevSlide').click();
+        }
+      });
+
+      // Global Reveal & Reset
+      document.getElementById('btnRevealAll').addEventListener('click', revealActiveTabAnswers);
+      document.getElementById('btnResetTab').addEventListener('click', resetActiveTab);
+
+      // Task 2 Checkers
+      document.getElementById('btnCheckPrefixes').addEventListener('click', checkPrefixes);
+      document.getElementById('btnRevealSuffixExamples').addEventListener('click', () => {
+        suffixData.forEach((_, idx) => window.revealSingleSuffixExample(idx));
+      });
+      document.getElementById('btnCheckAffixQuiz').addEventListener('click', checkAffixQuiz);
+      document.getElementById('btnRevealAllSyllables').addEventListener('click', () => {
+        syllableWordsData.forEach((_, idx) => window.revealSingleSyllableCard(idx));
+      });
+
+      // Task 3 Sentence Stress Buttons
+      document.getElementById('btnCheckStressSentences').addEventListener('click', () => checkStressSentences(false));
+      document.getElementById('btnShowStressKey').addEventListener('click', () => checkStressSentences(true));
+      document.getElementById('btnResetStressSentences').addEventListener('click', () => {
+        stressSelectionState = {};
+        renderTask3();
+      });
+
+      // Task 4 Matching Buttons
+      document.getElementById('btnCheckAlMatching').addEventListener('click', () => checkAllAlMatches(false));
+      document.getElementById('btnRevealAlMatching').addEventListener('click', () => checkAllAlMatches(true));
+      document.getElementById('btnResetAlMatching').addEventListener('click', () => renderTask4());
+
+      // Task 6 Checking Understanding Button
+      document.getElementById('btnCheckUnderstandingQuiz').addEventListener('click', () => checkUnderstandingQuiz(false));
+
+      // Classroom Role-Play Timer
+      function updateTimerDisplay() {
+        const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+        const secs = String(timerSeconds % 60).padStart(2, '0');
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+      }
+
+      document.getElementById('btnStartTimer').addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          btn.textContent = 'Start';
+        } else {
+          btn.textContent = 'Pause';
+          timerInterval = setInterval(() => {
+            if (timerSeconds > 0) {
+              timerSeconds--;
+              updateTimerDisplay();
+            } else {
+              clearInterval(timerInterval);
+              timerInterval = null;
+              btn.textContent = 'Start';
+              showToast('⏰ Time is up! Great meeting role-play practice!', '🎉');
+            }
+          }, 1000);
+        }
+      });
+
+      document.getElementById('btnResetTimer').addEventListener('click', () => {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        timerSeconds = 180;
+        updateTimerDisplay();
+        document.getElementById('btnStartTimer').textContent = 'Start';
+      });
+    });
+  </script>
+</body>
+</html>
