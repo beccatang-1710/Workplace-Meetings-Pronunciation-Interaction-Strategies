@@ -80,6 +80,16 @@
       border-left: 4px solid #f59e0b;
       background: linear-gradient(to right, #fffbeb, #fef3c7);
     }
+    .qr-dialog {
+      border: 0;
+      border-radius: 1rem;
+      padding: 0;
+      max-width: calc(100vw - 2rem);
+    }
+    .qr-dialog::backdrop {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(2px);
+    }
     .slide-card {
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -102,9 +112,14 @@
   <!-- Top Navigation & Teacher Toolbar -->
   <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg border-b border-slate-700">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Workplace Meetings: Pronunciation &amp; Interaction Strategies</h1>
-        <p class="text-xs text-slate-300 mt-0.5">Presented by Rebecca Tang</p>
+      <div class="flex items-center gap-3">
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Workplace Meetings: Pronunciation &amp; Interaction Strategies</h1>
+          <p class="text-xs text-slate-300 mt-0.5">Presented by Rebecca Tang</p>
+        </div>
+        <button type="button" onclick="showQrPopup()" aria-label="Enlarge QR code for scanning" title="Click to enlarge QR code" class="shrink-0 rounded-lg bg-white p-1 shadow-sm hover:ring-2 hover:ring-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+          <img src="qrcode_beccatang-1710.github.io.png" alt="QR code for the teaching deck website" class="w-14 h-14 rounded-md" />
+        </button>
       </div>
 
       <!-- Global Controls -->
@@ -159,6 +174,15 @@
       </div>
     </nav>
   </header>
+
+  <dialog id="qrDialog" class="qr-dialog w-full bg-white p-5 sm:p-6 text-center shadow-2xl" onclick="if (event.target === this) this.close()">
+    <div class="flex items-center justify-between gap-4 mb-4">
+      <h2 class="text-lg font-bold text-slate-900">Scan to open the teaching deck</h2>
+      <button type="button" onclick="document.getElementById('qrDialog').close()" aria-label="Close QR code popup" class="rounded-lg px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold">✕</button>
+    </div>
+    <img src="qrcode_beccatang-1710.github.io.png" alt="Large QR code for scanning" class="w-72 max-w-[75vw] mx-auto rounded-lg" />
+    <p class="mt-3 text-sm text-slate-600">Point your phone camera at the code.</p>
+  </dialog>
 
   <!-- Slide-by-Slide Presentation Navigator Bar (Visible when Slide Mode is ON) -->
   <div id="slideNavBanner" class="hidden bg-cyan-950 text-cyan-100 border-b border-cyan-800 px-4 py-2">
@@ -1163,7 +1187,7 @@
       {
         suffix: '-ic',
         title: 'Words ending in -ic',
-        audio: 'untitled%20folder/task-1b-ic.mp3',
+        audio: 'task-1b-ic.mp3',
         words: [
           { full: 'fantastic', syllables: ['fan', 'tas', 'tic'], stressedIndex: 1 },
           { full: 'organic', syllables: ['or', 'gan', 'ic'], stressedIndex: 1 },
@@ -1173,7 +1197,7 @@
       {
         suffix: '-tion',
         title: 'Words ending in -tion',
-        audio: 'untitled%20folder/task-1b-tion.mp3',
+        audio: 'task-1b-tion.mp3',
         words: [
           { full: 'promotion', syllables: ['pro', 'mo', 'tion'], stressedIndex: 1 },
           { full: 'information', syllables: ['in', 'for', 'ma', 'tion'], stressedIndex: 2 },
@@ -1295,7 +1319,7 @@
       {
         id: 's7a_1',
         part: 'Task 3a',
-        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_1.mp3',
+        audio: 'LAN3107_Unit%207_Task%207a_1.mp3',
         tokens: [
           { text: '‘Well,', stressed: false },
           { text: 'I', stressed: false },
@@ -1310,7 +1334,7 @@
       {
         id: 's7a_2',
         part: 'Task 3a',
-        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_2.mp3',
+        audio: 'LAN3107_Unit%207_Task%207a_2.mp3',
         tokens: [
           { text: '‘Thanks', stressed: true },
           { text: 'for', stressed: false },
@@ -1328,7 +1352,7 @@
       {
         id: 's7a_3',
         part: 'Task 3a',
-        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_3.mp3',
+        audio: 'LAN3107_Unit%207_Task%207a_3.mp3',
         tokens: [
           { text: '‘That’s', stressed: false },
           { text: 'a', stressed: false },
@@ -1359,7 +1383,7 @@
       {
         id: 's7a_4',
         part: 'Task 3a',
-        audio: 'untitled%20folder/LAN3107_Unit%207_Task%207a_4.mp3',
+        audio: 'LAN3107_Unit%207_Task%207a_4.mp3',
         tokens: [
           { text: '‘Sorry,', stressed: true },
           { text: 'I’m', stressed: false },
@@ -1482,7 +1506,7 @@
       {
         id: 'clip1',
         title: 'Meeting Clip 1',
-        video: 'untitled%20folder/task-5b-clip-1.mp4',
+        video: 'task-5b-clip-1.mp4',
         speaker1: '“We’re planning to launch a new initiative called ‘Donate a Dollar Day’ to boost our fundraising efforts.”',
         speaker2: '“Could you please clarify what you mean by ‘Donate a Dollar Day’? Can you give an example of how this would work?”',
         highlightedPhrase: 'Could you please clarify what you mean by ‘Donate a Dollar Day’?',
@@ -1493,7 +1517,7 @@
       {
         id: 'clip2',
         title: 'Meeting Clip 2',
-        video: 'untitled%20folder/task-5b-clip-2.mp4',
+        video: 'task-5b-clip-2.mp4',
         speaker1: '“We’ve been discussing potential strategies for our upcoming fundraising event.”',
         speaker2: '“I’d like to hear your thoughts on this, Taylor.”',
         highlightedPhrase: 'I’d like to hear your thoughts on this',
@@ -1504,7 +1528,7 @@
       {
         id: 'clip3',
         title: 'Meeting Clip 3',
-        video: 'untitled%20folder/task-5b-clip-3.mp4',
+        video: 'task-5b-clip-3.mp4',
         speaker1: '“As we continue our outreach, we have been focusing primarily on social media campaigns. We’ve promoted our charity on YouTube and Instagram.”',
         speaker2: '“Excuse me, could I add something here? I think we’ve also promoted on our own homepage.”',
         highlightedPhrase: 'Excuse me, could I add something here?',
@@ -1911,7 +1935,7 @@
       });
     }
 
-    const silentERecording = new Audio('untitled%20folder/task-1c-silent-e.mp3');
+    const silentERecording = new Audio('task-1c-silent-e.mp3');
     function playSilentERecording() {
       window.speechSynthesis?.cancel();
       silentERecording.pause();
@@ -2832,6 +2856,11 @@
     // ==========================================
     // 6. INITIALIZATION & EVENT LISTENERS
     // ==========================================
+    function showQrPopup() {
+      const dialog = document.getElementById('qrDialog');
+      if (dialog && !dialog.open) dialog.showModal();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       renderTask1();
       renderTask2();
